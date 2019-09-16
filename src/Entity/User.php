@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Integer;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -17,6 +18,26 @@ class User
      * @ORM\Column(type="integer")
      */
     private $id;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Vehicle", mappedBy="user")
+     */
+    private $vehicles;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Announce", mappedBy="user", orphanRemoval=true)
+     */
+    private $announce;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="user")
+     */
+    private $comment;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Location", mappedBy="user")
+     */
+    private $location;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -39,7 +60,7 @@ class User
     private $address;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="integer", length=255, nullable=true)
      */
     private $zipcode;
 
@@ -49,7 +70,7 @@ class User
     private $city;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="datetime", length=255)
      */
     private $signUpDate;
 
@@ -78,25 +99,6 @@ class User
      */
     private $password;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Vehicle", mappedBy="user")
-     */
-    private $vehicles;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Announce", mappedBy="user", orphanRemoval=true)
-     */
-    private $announces;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="user")
-     */
-    private $comments;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Location", mappedBy="user")
-     */
-    private $locations;
 
     public function __construct()
     {
@@ -159,7 +161,7 @@ class User
         return $this;
     }
 
-    public function getZipcode(): ?string
+    public function getZipcode(): ?int
     {
         return $this->zipcode;
     }
@@ -183,12 +185,12 @@ class User
         return $this;
     }
 
-    public function getSignUpDate(): ?string
+    public function getSignUpDate(): ?\DateTimeInterface
     {
         return $this->signUpDate;
     }
 
-    public function setSignUpDate(string $signUpDate): self
+    public function setSignUpDate(?\DateTimeInterface $signUpDate): self
     {
         $this->signUpDate = $signUpDate;
 
@@ -291,13 +293,13 @@ class User
      */
     public function getAnnounces(): Collection
     {
-        return $this->announces;
+        return $this->announce;
     }
 
     public function addAnnounce(Announce $announce): self
     {
-        if (!$this->announces->contains($announce)) {
-            $this->announces[] = $announce;
+        if (!$this->announce->contains($announce)) {
+            $this->announce[] = $announce;
             $announce->setUser($this);
         }
 
@@ -320,15 +322,15 @@ class User
     /**
      * @return Collection|Comment[]
      */
-    public function getComments(): Collection
+    public function getComment(): Collection
     {
-        return $this->comments;
+        return $this->comment;
     }
 
     public function addComment(Comment $comment): self
     {
-        if (!$this->comments->contains($comment)) {
-            $this->comments[] = $comment;
+        if (!$this->comment->contains($comment)) {
+            $this->comment[] = $comment;
             $comment->setUser($this);
         }
 
@@ -337,8 +339,8 @@ class User
 
     public function removeComment(Comment $comment): self
     {
-        if ($this->comments->contains($comment)) {
-            $this->comments->removeElement($comment);
+        if ($this->comment->contains($comment)) {
+            $this->comment->removeElement($comment);
             // set the owning side to null (unless already changed)
             if ($comment->getUser() === $this) {
                 $comment->setUser(null);
@@ -353,13 +355,13 @@ class User
      */
     public function getLocations(): Collection
     {
-        return $this->locations;
+        return $this->location;
     }
 
     public function addLocation(Location $location): self
     {
-        if (!$this->locations->contains($location)) {
-            $this->locations[] = $location;
+        if (!$this->location->contains($location)) {
+            $this->location[] = $location;
             $location->setUser($this);
         }
 
@@ -368,8 +370,8 @@ class User
 
     public function removeLocation(Location $location): self
     {
-        if ($this->locations->contains($location)) {
-            $this->locations->removeElement($location);
+        if ($this->location->contains($location)) {
+            $this->location->removeElement($location);
             // set the owning side to null (unless already changed)
             if ($location->getUser() === $this) {
                 $location->setUser(null);

@@ -30,6 +30,17 @@ class Announce
     private $user;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="anounce")
+     */
+    private $comments;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Location", mappedBy="announce")
+     */
+    private $locations;
+
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $address;
@@ -54,19 +65,11 @@ class Announce
      */
     private $enable;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="anounce")
-     */
-    private $comments;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Location", inversedBy="announce")
-     */
-    private $location;
 
     public function __construct()
     {
         $this->comments = new ArrayCollection();
+        $this->locations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -189,15 +192,35 @@ class Announce
         return $this;
     }
 
-    public function getLocation(): ?Location
+    /**
+     * @return Collection|Location[]
+     */
+    public function getLocations(): Collection
     {
-        return $this->location;
+        return $this->locations;
     }
 
-    public function setLocation(?Location $location): self
+    public function addLocation(Location $location): self
     {
-        $this->location = $location;
+        if (!$this->locations->contains($location)) {
+            $this->locations[] = $location;
+            $location->setAnnounce($this);
+        }
 
         return $this;
     }
+
+    public function removeLocation(Location $location): self
+    {
+        if ($this->locations->contains($location)) {
+            $this->locations->removeElement($location);
+            // set the owning side to null (unless already changed)
+            if ($location->getAnnounce() === $this) {
+                $location->setAnnounce(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

@@ -21,15 +21,6 @@ class Comment
      */
     private $note;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $endDate;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $startDate;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\user", inversedBy="comments")
@@ -39,7 +30,7 @@ class Comment
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\announce", inversedBy="comments")
      */
-    private $anounce;
+    private $announce;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -63,29 +54,6 @@ class Comment
         return $this;
     }
 
-    public function getEndDate(): ?\DateTimeInterface
-    {
-        return $this->endDate;
-    }
-
-    public function setEndDate(?\DateTimeInterface $endDate): self
-    {
-        $this->endDate = $endDate;
-
-        return $this;
-    }
-
-    public function getStartDate(): ?\DateTimeInterface
-    {
-        return $this->startDate;
-    }
-
-    public function setStartDate(\DateTimeInterface $startDate): self
-    {
-        $this->startDate = $startDate;
-
-        return $this;
-    }
 
     public function getUser(): ?user
     {
@@ -99,14 +67,14 @@ class Comment
         return $this;
     }
 
-    public function getAnounce(): ?announce
+    public function getAnnounce(): ?announce
     {
-        return $this->anounce;
+        return $this->announce;
     }
 
-    public function setAnounce(?announce $anounce): self
+    public function setAnnounce(?announce $announce): self
     {
-        $this->anounce = $anounce;
+        $this->announce = $announce;
 
         return $this;
     }

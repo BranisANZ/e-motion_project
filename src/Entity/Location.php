@@ -19,6 +19,17 @@ class Location
     private $id;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\user", inversedBy="locations")
+     */
+    private $user;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\announce", inversedBy="locations")
+     */
+    private $announce;
+
+
+    /**
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $startDate;
@@ -28,19 +39,10 @@ class Location
      */
     private $endDate;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\user", inversedBy="locations")
-     */
-    private $user;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\announce", mappedBy="location")
-     */
-    private $announce;
 
     public function __construct()
     {
-        $this->announce = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -84,34 +86,16 @@ class Location
         return $this;
     }
 
-    /**
-     * @return Collection|announce[]
-     */
-    public function getAnnounce(): Collection
+    public function getAnnounce(): ?announce
     {
         return $this->announce;
     }
 
-    public function addAnnounce(announce $announce): self
+    public function setAnnounce(?announce $announce): self
     {
-        if (!$this->announce->contains($announce)) {
-            $this->announce[] = $announce;
-            $announce->setLocation($this);
-        }
+        $this->announce = $announce;
 
         return $this;
     }
 
-    public function removeAnnounce(announce $announce): self
-    {
-        if ($this->announce->contains($announce)) {
-            $this->announce->removeElement($announce);
-            // set the owning side to null (unless already changed)
-            if ($announce->getLocation() === $this) {
-                $announce->setLocation(null);
-            }
-        }
-
-        return $this;
-    }
 }
