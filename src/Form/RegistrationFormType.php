@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -58,11 +59,13 @@ class RegistrationFormType extends AbstractType
 
                 ],
             ])
-            ->add('birthdayDate',DateTimeType::class,[
+            ->add('birthdayDate',DateType::class,[
                 'attr' => [
-                    'placeholder' => 'Date de naissance'
+                    'placeholder' => 'Date de naissance',
+                    'class' => 'form-control',
 
                 ],
+                'widget' => 'single_text'
             ])
             ->add('address',TextType::class,[
                 'attr' => [

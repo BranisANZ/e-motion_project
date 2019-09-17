@@ -6,11 +6,11 @@
     <div class="r-header r-header-inner">
         <div class="r-header-inner-banner">
             <div class="r-header-in-over">
-                <h1><b>Connexion & Inscription</b></h1>
+                <h1><b>Inscription</b></h1>
                 <div class="r-breadcrum">
                     <ul>
                         <li><a href="login-register.html#">Accueil</a></li>
-                        <li><span>Connexion & Inscription</span></li>
+                        <li><span>Inscription</span></li>
                     </ul>
                 </div>
             </div>
@@ -18,37 +18,8 @@
     </div>
     <section id="r-login-register">
         <div class="r-login-register">
-            <div class="r-login-register-in">
-                <div class="r-auth-or">
-                    <span>OU</span>
-                </div>
-                <div class="clearfix">
-                    <div class="r-auth-outer r-login">
-                        <div class="r-auth-head">
-                            <h2><b>Connexion</b></h2>
-                            <span>Login to our website</span>
-                        </div>
-                        <div class="r-auth-form">
-                            <div class="r-or-line"><span>CONNEXION</span></div>
-                            <form action="{{ path("login") }}" method="POST">
-                                <div class="form-group">
-                                    <input type="text" class="form-control" required placeholder="Email">
-                                </div>
-                                <div class="form-group">
-                                    <input type="password" class="form-control" required placeholder="Password">
-                                </div>
-                                <div class="form-group">
-                                    <button class="btn btn-full">INSCRIPTION</button>
-                                </div>
-                            </form>
-                            <div class="r-from-inof">
-                                <p class="text-center">
-                                    * Denotes mandatory field. <br>
-                                    ** At least one telephone number is required.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+            <div class="r-login-register-in" style="display: flex;justify-content: center">
+                <div class="col-md-8">
                     <div class="r-auth-outer r-register">
                         <div class="r-auth-head">
                             <h2><b>Inscription</b></h2>
@@ -89,10 +60,13 @@
                             <div class="form-group">
                                 {{ form_widget(registrationForm.phone) }}
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" style="display:flex;justify-content: center">
                                 <button class="btn btn-full">Inscription</button>
                             </div>
                             {{ form_end(registrationForm) }}
+                        </div>
+                        <div class="r-from-inof">
+                            <p class="text-center">Déja inscrit ? <a href="{{ path("user_login") }}">Connecte toi</a></p>
                         </div>
                     </div>
                 </div>

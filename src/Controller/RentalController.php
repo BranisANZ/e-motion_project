@@ -34,7 +34,7 @@ class RentalController extends AbstractController
 
             return $this->redirectToRoute("home");
         }
-        return $this->render("rental/index.html.twig", array(
+        return $this->render("rental/register.html.twig", array(
             'form'  => $form->createView(),
         ));
     }

@@ -11,10 +11,14 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
+
+/**
+ * @Route("/user", name="user_")
+ */
 class UserController extends AbstractController
 {
     /**
-     * @Route("/user", name="user")
+     * @Route("/register", name="register")
      */
     public function index(Request $request,UserPasswordEncoderInterface $passwordEncoder)
     {
@@ -38,36 +42,42 @@ class UserController extends AbstractController
             $entityManager->flush();
 
             // do anything else you need here, like send an email
-
             return $this->redirectToRoute('home');
         }
 
 
-        return $this->render('user/index.html.twig', [
+        return $this->render('user/register.html.twig', [
             'controller_name' => 'UserController',
             'registrationForm' => $formRegister->createView()
         ]);
     }
 
     /**
-     * @Route("/user/login", name="login")
+     * @Route("/login", name="login")
      */
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    public function login(AuthenticationUtils $authenticationUtils)
     {
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
+        return $this->render('user/login.html.twig', [
+            'last_username' => $lastUsername,
+            'error' => $error
+        ]);
+
     }
 
     /**
-     * @Route("/register", name="app_register")
+     * @Route("/logout", name="logout", methods={"GET"})
      */
-    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
+    public function logout()
     {
-
+        // controller can be blank: it will never be executed!
+        throw new \Exception('Don\'t forget to activate logout in security.yaml');
     }
+
 
 
 }
