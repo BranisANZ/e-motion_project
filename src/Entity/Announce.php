@@ -45,18 +45,24 @@ class Announce
      */
     private $address;
 
+
+    /**
+     * @ORM\Column(type="integer", length=255, nullable=true)
+     */
+    private $zipcode;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $city;
+
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
     private $price;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $photo;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     private $description;
 
@@ -121,18 +127,6 @@ class Announce
     public function setPrice(?int $price): self
     {
         $this->price = $price;
-
-        return $this;
-    }
-
-    public function getPhoto(): ?string
-    {
-        return $this->photo;
-    }
-
-    public function setPhoto(?string $photo): self
-    {
-        $this->photo = $photo;
 
         return $this;
     }
@@ -222,5 +216,39 @@ class Announce
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getZipcode()
+    {
+        return $this->zipcode;
+    }
+
+    /**
+     * @param mixed $zipcode
+     */
+    public function setZipcode($zipcode): void
+    {
+        $this->zipcode = $zipcode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCity()
+    {
+        return $this->city;
+    }
+
+    /**
+     * @param mixed $city
+     */
+    public function setCity($city): void
+    {
+        $this->city = $city;
+    }
+
+
 
 }
