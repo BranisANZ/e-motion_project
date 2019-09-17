@@ -3,35 +3,59 @@
 {% block title %}Louer son véhicule{% endblock %}
 
 {% block body %}
-    <div class="r-get-form">
-        {{ form_start(form) }}
-        <div class="clearfix">
-            {{ form_errors(form) }}
-            <div class="form-group">
-                {{ form_row(form.brand, { 'label': 'Marque :' }) }}
-            </div>
-            <div class="form-group">
-                {{ form_row(form.matriculation, { 'label': 'Matriculation :' }) }}
-            </div>
-            <div class="form-group">
-                {{ form_row(form.autonomie, { 'label': 'Autonomie :' }) }}
-            </div>
-            <div class="form-group">
-                {{ form_row(form.km, { 'label': 'Kilometrage :' }) }}
-            </div>
-            <div class="form-group">
-                {{ form_row(form.door, { 'label': 'Nombre de porte :' }) }}
-            </div>
-            <div class="form-group">
-                {{ form_row(form.year, { 'label': 'Année immatriculation :' }) }}
-            </div>
-            <div class="form-group">
-                {{ form_row(form.place, { 'label': 'Nombre de place :' }) }}
-            </div>
-            <div class="form-group">
-                <button type="submit" name="submit" class="cancelbtn">Poster</button>
+    <div class="container" style="margin-top: 5rem">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 offset-lg-3 offset-md-3">
+                <div class="card">
+                    {{ form_start(form) }}
+                    <h3 class="card-header">Louer mon vehicule</h3>
+                    <div class="card-body">
+                        {{ form_errors(form) }}
+                        <div class="form-group">
+                            {{ form_label(form.brand) }}
+                            {{ form_widget(form.brand) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.matriculation) }}
+                            {{ form_widget(form.matriculation) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.autonomie) }}
+                            <div class="input-group">
+                                {{ form_widget(form.autonomie) }}
+                                <div class="input-group-append">
+                                    <span class="input-group-text">Km</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.door) }}
+                            {{ form_widget(form.door) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.year) }}
+                            {{ form_widget(form.year) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.place) }}
+                            {{ form_widget(form.place) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.km) }}
+                            <div class="input-group">
+                                {{ form_widget(form.km) }}
+                                <div class="input-group-append">
+                                    <span class="input-group-text">Km</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" name="submit" class="btn btn-primary">Poster</button>
+                    </div>
+                    {{ form_end(form) }}
+                </div>
             </div>
         </div>
-        {{ form_end(form) }}
     </div>
 {% endblock %}
