@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Louer son véhicule{% endblock %}
+
+{% block body %}
+    <div class="r-get-form">
+        {{ form_start(form) }}
+        <div class="clearfix">
+            {{ form_errors(form) }}
+            <div class="form-group">
+                {{ form_row(form.brand, { 'label': 'Marque :' }) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.matriculation, { 'label': 'Matriculation :' }) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.autonomie, { 'label': 'Autonomie :' }) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.km, { 'label': 'Kilometrage :' }) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.door, { 'label': 'Nombre de porte :' }) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.year, { 'label': 'Année immatriculation :' }) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.place, { 'label': 'Nombre de place :' }) }}
+            </div>
+            <div class="form-group">
+                <button type="submit" name="submit" class="cancelbtn">Poster</button>
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

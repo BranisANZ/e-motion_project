@@ -24,7 +24,7 @@ class Announce
     private $vehicle;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\user", inversedBy="announces")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="announces")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;

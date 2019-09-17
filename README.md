@@ -6,6 +6,8 @@ Client: E-Motion
 
 Entreprise: In-Dev
 
+Chiffrage : 19 200 euros
+
 Équipes :
 - Alexandre Balle
 - Branis Ainouz
@@ -16,7 +18,7 @@ Technologies :
 - Github (versionning & gestion des tâches)
 - Docker 
 - Symfony 
-- My SQL
+- MySQL
 - Bootstrap
 - Circle CI (qualité de code)
 - Adminer (gestion de BDD)
@@ -26,13 +28,12 @@ Inspiration :
 - https://www.drivy.com
 
 Estimation: 
+- 2 jours de preparation (note de cadrage, comprehension du projet)
+- 15 jour de développement web  
+- 1 journée de recettage 
+- 1 journée lancement de projet
+- 1 journée créa et de maquettage
 
-15 jour de développement web / 
-1 journée de recettage / 
-1 journée lancement de projet / 
-1 journée créa et de maquettage
-
-Chiffrage : 
-19 200 euros
-
-
+Modalité d'échange :
+- Slack
+- Trello
