@@ -34,7 +34,7 @@ class RentalType extends AbstractType
                 'attr' => [
                     'class' => 'form-control'
                 ]
-            ])->add('autonomie',IntegerType::class, [
+            ])->add('autonomy',IntegerType::class, [
                 'label' => 'Autonomie :',
                 'attr' => [
                     'class' => 'form-control'
