@@ -14,7 +14,6 @@ class AnnounceType extends AbstractType
         $builder
             ->add('address')
             ->add('price')
-            ->add('photo')
             ->add('description')
             ->add('enable')
             ->add('vehicle')
