@@ -5,8 +5,6 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use phpDocumentor\Reflection\Types\Integer;
-
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
@@ -98,6 +96,11 @@ class User
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $password;
+
+    /**
+     * @ORM\Column(type="integer", length=255, nullable=true)
+     */
+    private $loyaltyPoints;
 
 
     public function __construct()
@@ -380,4 +383,69 @@ class User
 
         return $this;
     }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getComments(): ArrayCollection
+    {
+        return $this->comments;
+    }
+
+    /**
+     * @param ArrayCollection $comments
+     */
+    public function setComments(ArrayCollection $comments): void
+    {
+        $this->comments = $comments;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAnnounce()
+    {
+        return $this->announce;
+    }
+
+    /**
+     * @param mixed $announce
+     */
+    public function setAnnounce($announce): void
+    {
+        $this->announce = $announce;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    /**
+     * @param mixed $location
+     */
+    public function setLocation($location): void
+    {
+        $this->location = $location;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLoyaltyPoints()
+    {
+        return $this->loyaltyPoints;
+    }
+
+    /**
+     * @param mixed $loyaltyPoints
+     */
+    public function setLoyaltyPoints($loyaltyPoints): void
+    {
+        $this->loyaltyPoints = $loyaltyPoints;
+    }
+
 }
