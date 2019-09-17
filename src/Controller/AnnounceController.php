@@ -20,7 +20,7 @@ class AnnounceController extends AbstractController
      */
     public function index(AnnounceRepository $announceRepository): Response
     {
-        return $this->render('announce/index.html.twig', [
+        return $this->render('announce/register.html.twig', [
             'announces' => $announceRepository->findAll(),
         ]);
     }

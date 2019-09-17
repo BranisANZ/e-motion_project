@@ -19,7 +19,7 @@ class Announce
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\vehicle", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Vehicle", cascade={"persist", "remove"})
      */
     private $vehicle;
 
@@ -83,12 +83,12 @@ class Announce
         return $this->id;
     }
 
-    public function getVehicle(): ?vehicle
+    public function getVehicle(): ?Vehicle
     {
         return $this->vehicle;
     }
 
-    public function setVehicle(?vehicle $vehicle): self
+    public function setVehicle(?Vehicle $vehicle): self
     {
         $this->vehicle = $vehicle;
 
