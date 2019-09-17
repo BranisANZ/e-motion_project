@@ -32,6 +32,16 @@ class Vehicle
     private $matriculation;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $type;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $photo;
+
+    /**
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $year;
@@ -39,7 +49,7 @@ class Vehicle
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $autonomie;
+    private $autonomy;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -109,14 +119,14 @@ class Vehicle
         return $this;
     }
 
-    public function getAutonomie(): ?int
+    public function getAutonomy(): ?int
     {
-        return $this->autonomie;
+        return $this->autonomy;
     }
 
-    public function setAutonomie(?int $autonomie): self
+    public function setAutonomy(?int $autonomy): self
     {
-        $this->autonomie = $autonomie;
+        $this->autonomy = $autonomy;
 
         return $this;
     }
@@ -156,4 +166,40 @@ class Vehicle
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getPhoto()
+    {
+        return $this->photo;
+    }
+
+    /**
+     * @param mixed $photo
+     */
+    public function setPhoto($photo): void
+    {
+        $this->photo = $photo;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param mixed $type
+     */
+    public function setType($type): void
+    {
+        $this->type = $type;
+    }
+
+
+
+
 }
