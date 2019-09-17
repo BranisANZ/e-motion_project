@@ -30,8 +30,7 @@ class AnnounceController extends AbstractController
      */
     public function new(Request $request): Response
     {
-        $announce = new Announce();
-        $form = $this->createForm(AnnounceType::class, $announce);
+        $form = $this->createForm(AnnounceType::class, $announce = new Announce());
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

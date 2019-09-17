@@ -9,6 +9,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Vehicle
 {
+    public static $types = [
+        "Voiture",
+        "Scooter"
+    ];
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

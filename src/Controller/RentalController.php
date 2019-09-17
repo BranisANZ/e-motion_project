@@ -24,15 +24,20 @@ class RentalController extends AbstractController
      */
     public function addCarAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-
         $form = $this->createForm(RentalType::class, $vehicle = new Vehicle());
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($vehicle);
-            $em->flush();
 
-            return $this->redirectToRoute("home");
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($this->isCsrfTokenValid(
+                'rental_item',
+                $request->request->get('rental')['_token']
+            )) {
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($vehicle);
+                $em->flush();
+
+                return $this->redirectToRoute("announce_new");
+            }
         }
         return $this->render("rental/index.html.twig", array(
             'form'  => $form->createView(),
