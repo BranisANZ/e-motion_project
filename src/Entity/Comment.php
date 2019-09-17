@@ -19,7 +19,7 @@ class Comment
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $note;
+    private $rate;
 
 
     /**
@@ -33,7 +33,7 @@ class Comment
     private $announce;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     private $content;
 
@@ -42,14 +42,14 @@ class Comment
         return $this->id;
     }
 
-    public function getNote(): ?int
+    public function getRate(): ?int
     {
-        return $this->note;
+        return $this->rate;
     }
 
-    public function setNote(?int $note): self
+    public function setRate(?int $rate): self
     {
-        $this->note = $note;
+        $this->rate = $rate;
 
         return $this;
     }

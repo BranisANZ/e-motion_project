@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Announce{% endblock %}
+
+{% block body %}
+    <h1>Edit Announce</h1>
+
+    {{ include('announce/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('announce_index') }}">back to list</a>
+
+    {{ include('announce/_delete_form.html.twig') }}
+{% endblock %}
