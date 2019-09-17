@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
-
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
-class User implements UserInterface
+class User
 {
     /**
      * @ORM\Id()
@@ -85,100 +85,35 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
+    private $mail;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
     private $phone;
 
     /**
-     * @ORM\Column(type="string", length=180, unique=true)
-     */
-    private $email;
-
-    /**
-     * @ORM\Column(type="json")
-     */
-    private $roles = [];
-
-    /**
-     * @var string The hashed password
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $password;
+
+    /**
+     * @ORM\Column(type="integer", length=255, nullable=true)
+     */
+    private $loyaltyPoints;
+
+
+    public function __construct()
+    {
+        $this->vehicles = new ArrayCollection();
+        $this->announces = new ArrayCollection();
+        $this->comments = new ArrayCollection();
+        $this->locations = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
-    public function getUsername(): string
-    {
-        return (string) $this->email;
-    }
-
-    /**
-     * @see UserInterface
-     */
-    public function getRoles(): array
-    {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
-    }
-
-    public function setRoles(array $roles): self
-    {
-        $this->roles = $roles;
-
-        return $this;
-    }
-
-    /**
-     * @see UserInterface
-     */
-    public function getPassword(): string
-    {
-        return (string) $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    /**
-     * @see UserInterface
-     */
-    public function getSalt()
-    {
-        // not needed when using the "bcrypt" algorithm in security.yaml
-    }
-
-    /**
-     * @see UserInterface
-     */
-    public function eraseCredentials()
-    {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
     }
 
     public function getLastname(): ?string
@@ -313,6 +248,17 @@ class User implements UserInterface
         return $this;
     }
 
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(?string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
+    }
 
     /**
      * @return Collection|Vehicle[]
@@ -437,4 +383,69 @@ class User implements UserInterface
 
         return $this;
     }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getComments(): ArrayCollection
+    {
+        return $this->comments;
+    }
+
+    /**
+     * @param ArrayCollection $comments
+     */
+    public function setComments(ArrayCollection $comments): void
+    {
+        $this->comments = $comments;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAnnounce()
+    {
+        return $this->announce;
+    }
+
+    /**
+     * @param mixed $announce
+     */
+    public function setAnnounce($announce): void
+    {
+        $this->announce = $announce;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    /**
+     * @param mixed $location
+     */
+    public function setLocation($location): void
+    {
+        $this->location = $location;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLoyaltyPoints()
+    {
+        return $this->loyaltyPoints;
+    }
+
+    /**
+     * @param mixed $loyaltyPoints
+     */
+    public function setLoyaltyPoints($loyaltyPoints): void
+    {
+        $this->loyaltyPoints = $loyaltyPoints;
+    }
+
 }

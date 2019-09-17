@@ -19,7 +19,7 @@ class Location
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\user", inversedBy="locations")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="locations")
      */
     private $user;
 
@@ -74,12 +74,12 @@ class Location
         return $this;
     }
 
-    public function getUser(): ?user
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(?user $user): self
+    public function setUser(?User $user): self
     {
         $this->user = $user;
 
