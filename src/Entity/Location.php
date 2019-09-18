@@ -24,7 +24,7 @@ class Location
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\announce", inversedBy="locations")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Announce", inversedBy="locations")
      */
     private $announce;
 
