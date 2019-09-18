@@ -19,22 +19,31 @@ class AnnounceRepository extends ServiceEntityRepository
         parent::__construct($registry, Announce::class);
     }
 
-    // /**
-    //  * @return Announce[] Returns an array of Announce objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return Announce[] Returns an array of Announce objects
+     */
+    public function findForSearch($value)
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
+        $search = $this->createQueryBuilder('a')
             ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
         ;
+
+        if($value['minPrice'] != null){
+            $search->andWhere('a.price >= :priceMini')
+                ->setParameter('priceMini',$value['minPrice'])
+            ;
+        }
+        if($value['maxPrice'] != null){
+            $search->andWhere('a.price <= :maxPrice')
+                ->setParameter('maxPrice',$value['maxPrice'])
+            ;
+        }
+        dump($search);
+        return $search->getQuery()->getResult();
+
+
     }
-    */
+
 
     /*
     public function findOneBySomeField($value): ?Announce
