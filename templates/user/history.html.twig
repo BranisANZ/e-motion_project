@@ -85,6 +85,7 @@
                     <th>Ville</th>
                     <th>Date de début</th>
                     <th>Date de fin</th>
+                    <th>Prix</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -96,6 +97,7 @@
                         <td>{{ past.city }}</td>
                         <td>{{ past.startDate | date('j/m/Y') }}</td>
                         <td>{{ past.endDate | date('j/m/Y') }}</td>
+                        <td>{{ past.price*past.dateDiff }} €</td>
                     </tr>
                 {% endfor %}
                 </tbody>
