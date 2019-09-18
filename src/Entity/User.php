@@ -330,7 +330,7 @@ class User implements UserInterface
     /**
      * @return Collection|Vehicle[]
      */
-    public function getVehicles(): Collection
+    public function getVehicles(): ?Vehicle
     {
         return $this->vehicles;
     }
@@ -361,7 +361,7 @@ class User implements UserInterface
     /**
      * @return Collection|Announce[]
      */
-    public function getAnnounces(): Collection
+    public function getAnnounces(): ?Announce
     {
         return $this->announce;
     }
@@ -392,7 +392,7 @@ class User implements UserInterface
     /**
      * @return Collection|Comment[]
      */
-    public function getComment(): Collection
+    public function getComment(): ?Comment
     {
         return $this->comment;
     }
@@ -423,7 +423,7 @@ class User implements UserInterface
     /**
      * @return Collection|Location[]
      */
-    public function getLocations(): Collection
+    public function getLocations(): ?Location
     {
         return $this->location;
     }
