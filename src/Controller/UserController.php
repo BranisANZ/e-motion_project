@@ -82,8 +82,6 @@ class UserController extends AbstractController
         $locationFutur = $repository->getLocationFutur($user->getId());
         $locationDate = $repository->getLocationDate($user->getId());
 
-        dump($locationPast, $locationFutur, $locationDate);
-
         return $this->render('user/history.html.twig', [
             'locationPast' => $locationPast,
             'locationFutur' => $locationFutur,
