@@ -9,7 +9,7 @@ App\Entity\User:
     signUpDate: <dateTimeBetween('-17 years', '-1 years')>
     licenseDriving:
     photo: <imageUrl(400, 400, 'cats')>
-    mail: <email()>
+    email: <email()>
     phone: <phoneNumber()>
     loyaltyPoints: <numberBetween(0, 700)>
     password: user

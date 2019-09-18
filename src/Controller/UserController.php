@@ -78,6 +78,14 @@ class UserController extends AbstractController
         throw new \Exception('Don\'t forget to activate logout in security.yaml');
     }
 
+    /**
+     * @param Request $request
+     * @Route("/history/{id}", name="history", methods={"GET"})
+     */
+    public function history(Request $request){
+
+    }
+
 
 
 }
