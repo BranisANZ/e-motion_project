@@ -9,7 +9,7 @@ App\Entity\User:
     signUpDate: <dateTimeBetween('-17 years', '-1 years')>
     licenseDriving:
     photo: <imageUrl(400, 400, 'cats')>
-    mail: <email()>
+    email: <email()>
     phone: <phoneNumber()>
     loyaltyPoints: <numberBetween(0, 700)>
     password: user
@@ -19,6 +19,7 @@ App\Entity\Vehicle:
     user: "@user<numberBetween(1,20)>"
     photo: <imageUrl(400, 400, 'transport')>
     brand: <randomElement(['Mazda','Kia','Renault', 'Opel', 'Tesla'])>
+    model: <randomElement(['Clio','208','Class A', '508', 'A1'])>
     km: <numberBetween( 0, 200000)>
     matriculation: <swiftBicNumber()>
     year: <dateTimeBetween('-30 years', '-1 years')>

@@ -22,6 +22,11 @@ class Vehicle
     private $brand;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $model;
+
+    /**
      * @ORM\Column(type="integer", nullable=true)
      */
     private $km;
@@ -198,6 +203,25 @@ class Vehicle
     {
         $this->type = $type;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getModel()
+    {
+        return $this->model;
+    }
+
+    /**
+     * @param mixed $model
+     * @return Vehicle
+     */
+    public function setModel($model)
+    {
+        $this->model = $model;
+        return $this;
+    }
+
 
 
 
