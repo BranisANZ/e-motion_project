@@ -2,23 +2,27 @@
 
 namespace App\Controller;
 
-use App\Entity\Announce;
-use App\Entity\User;
-use App\Entity\Vehicle;
-use App\Form\AnnouncementType;
-use App\Form\RentalType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\{
+    RedirectResponse, Request, Response
+};
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
+use App\Entity\{
+    Announce, Vehicle
+};
+use App\Form\{
+    AnnouncementType, RentalType
+};
 /**
  * @Route("/announce")
  */
 class AnnounceController extends AbstractController
 {
     /**
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @Route("/add/vehicle", name="vehicleAnnoune")
      * @param Request $request
      * @return RedirectResponse|Response
@@ -51,12 +55,14 @@ class AnnounceController extends AbstractController
     }
 
     /**
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @Route("/add/announcement/{vehicleId}", name="announcement")
+     * @param Security $security
      * @param Request $request
      * @param int $vehicleId
      * @return RedirectResponse|Response
      */
-    public function addAnnouncementAction(Request $request, int $vehicleId)
+    public function addAnnouncementAction(Security $security, Request $request, int $vehicleId)
     {
         $form = $this->createForm(AnnouncementType::class, $announcement = new Announce(), [
             'action' => $this->generateUrl('announcement', [
@@ -75,7 +81,7 @@ class AnnounceController extends AbstractController
                 $repo = $em->getRepository(Vehicle::class);
 
                 $announcement->setVehicle($repo->find($vehicleId));
-                $announcement->setUser('test');
+                $announcement->setUser($security->getUser());
                 $em->persist($announcement);
                 $em->flush();
 
