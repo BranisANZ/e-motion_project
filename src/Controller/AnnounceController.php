@@ -3,9 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Announce;
-use App\Form\AnnounceType;
-use App\Repository\AnnounceRepository;
+use App\Entity\User;
+use App\Entity\Vehicle;
+use App\Form\AnnouncementType;
+use App\Form\RentalType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,78 +19,71 @@ use Symfony\Component\Routing\Annotation\Route;
 class AnnounceController extends AbstractController
 {
     /**
-     * @Route("/", name="announce_index", methods={"GET"})
+     * @Route("/add/vehicle", name="vehicleAnnoune")
+     * @param Request $request
+     * @return RedirectResponse|Response
      */
-    public function index(AnnounceRepository $announceRepository): Response
+    public function addVehicleAction(Request $request)
     {
-        return $this->render('announce/register.html.twig', [
-            'announces' => $announceRepository->findAll(),
+        $form = $this->createForm(RentalType::class, $vehicle = new Vehicle(), [
+            'action' => $this->generateUrl('vehicleAnnoune'),
+            'method' => 'POST'
         ]);
-    }
-
-    /**
-     * @Route("/new", name="announce_new", methods={"GET","POST"})
-     */
-    public function new(Request $request): Response
-    {
-        $form = $this->createForm(AnnounceType::class, $announce = new Announce());
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($announce);
-            $entityManager->flush();
+            if ($this->isCsrfTokenValid(
+                'rental_item',
+                $request->request->get('rental')['_token']
+            )) {
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($vehicle);
+                $em->flush();
 
-            return $this->redirectToRoute('announce_index');
+                return $this->redirectToRoute('announcement', [
+                    'vehicleId' => $vehicle->getId(),
+                ]);
+            }
         }
-
-        return $this->render('announce/new.html.twig', [
-            'announce' => $announce,
-            'form' => $form->createView(),
-        ]);
+        return $this->render("announcement/partials/_vehicle.html.twig", array(
+            'form'  => $form->createView(),
+        ));
     }
 
     /**
-     * @Route("/{id}", name="announce_show", methods={"GET"})
+     * @Route("/add/announcement/{vehicleId}", name="announcement")
+     * @param Request $request
+     * @param int $vehicleId
+     * @return RedirectResponse|Response
      */
-    public function show(Announce $announce): Response
+    public function addAnnouncementAction(Request $request, int $vehicleId)
     {
-        return $this->render('announce/show.html.twig', [
-            'announce' => $announce,
+        $form = $this->createForm(AnnouncementType::class, $announcement = new Announce(), [
+            'action' => $this->generateUrl('announcement', [
+                'vehicleId' => $vehicleId,
+            ]),
+            'method' => 'POST'
         ]);
-    }
-
-    /**
-     * @Route("/{id}/edit", name="announce_edit", methods={"GET","POST"})
-     */
-    public function edit(Request $request, Announce $announce): Response
-    {
-        $form = $this->createForm(AnnounceType::class, $announce);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            if ($this->isCsrfTokenValid(
+                'announcement_item',
+                $request->request->get('announcement')['_token']
+            )) {
+                $em = $this->getDoctrine()->getManager();
+                $repo = $em->getRepository(Vehicle::class);
 
-            return $this->redirectToRoute('announce_index');
+                $announcement->setVehicle($repo->find($vehicleId));
+                $announcement->setUser('test');
+                $em->persist($announcement);
+                $em->flush();
+
+                return $this->redirectToRoute("home");
+            }
         }
-
-        return $this->render('announce/edit.html.twig', [
-            'announce' => $announce,
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("/{id}", name="announce_delete", methods={"DELETE"})
-     */
-    public function delete(Request $request, Announce $announce): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$announce->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($announce);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('announce_index');
+        return $this->render("announcement/partials/_announcement.html.twig", array(
+            'form'  => $form->createView(),
+        ));
     }
 }
