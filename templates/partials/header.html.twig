@@ -1,21 +1,26 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
     <div class="d-flex justify-content-center">
-            <a class="p-2" href="{{ path('home') }}">
-                <img src="{{ asset('images/logo.png') }}" width="100" height="30" alt="">
-            </a>
+        <a class="p-2" href="{{ path('home') }}">
+            <img src="{{ asset('images/logo.png') }}" width="100" height="30" alt="">
+        </a>
     </div>
     <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item border-warning border rounded mr-2">
-                <a class="nav-link text-warning " href="{{ path('rental') }}">Louer mon vehicule</a>
+                <a class="nav-link text-warning " href="{{ path('vehicleAnnoune') }}">Louer mon vehicule</a>
             </li>
-            <li class="nav-item mr-2">
-                <a class="nav-link text-dark" href="{{ path('user_login') }}">Connexion</a>
-            </li>
-            <li class="nav-item mr-2">
-                <a class="nav-link text-dark" href="{{ path('user_register') }}">Inscription</a>
-            </li>
+            {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                <li class="nav-item mr-2">
+                    <a class="nav-link text-dark" href="{{ path('user_logout') }}">Logout</a>
+                </li>
+            {% else %}
+                <li class="nav-item mr-2">
+                    <a class="nav-link text-dark" href="{{ path('user_login') }}">Connexion</a>
+                </li>
+                <li class="nav-item mr-2">
+                    <a class="nav-link text-dark" href="{{ path('user_register') }}">Inscription</a>
+                </li>
+            {% endif %}
         </ul>
     </div>
 </nav>
-
