@@ -28,7 +28,7 @@ class Comment
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\announce", inversedBy="comments")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Announce", inversedBy="comments")
      */
     private $announce;
 

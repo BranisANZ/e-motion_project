@@ -3,8 +3,11 @@
 namespace App\Repository;
 
 use App\Entity\Location;
+use App\Entity\Announce;
+use App\Entity\Vehicle;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * @method Location|null find($id, $lockMode = null, $lockVersion = null)
@@ -17,6 +20,46 @@ class LocationRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Location::class);
+    }
+
+    public function getLocationPast($idUser){ //date de fin déjà passé
+
+        $qb = $this->createQueryBuilder('l');
+        $qb
+            ->select('l.startDate, l.endDate, a.city, a.address, a.price, v.brand, v.matriculation')
+            ->innerJoin(Announce::class, 'a', Join::WITH, 'a.id = l.announce')
+            ->innerJoin(Vehicle::class, 'v', Join::WITH, 'v.id = a.vehicle')
+            ->where('l.endDate < CURRENT_DATE()')
+            ->andWhere('l.user = :idUser')
+            ->setParameter('idUser', $idUser)
+            ->orderBy('l.startDate', 'desc');
+        return $qb->getQuery()->getArrayResult();
+    }
+
+    public function getLocationFutur($idUser){ //date de début dans le futur
+
+        $qb = $this->createQueryBuilder('l');
+        $qb
+            ->select('l.startDate, l.endDate, a.city, a.address')
+            ->innerJoin(Announce::class, 'a', Join::WITH, 'a.id = l.announce')
+            ->where('l.startDate > CURRENT_DATE()')
+            ->andWhere('l.user = :idUser')
+            ->setParameter('idUser', $idUser)
+            ->orderBy('l.startDate', 'desc');
+        return $qb->getQuery()->getArrayResult();
+    }
+
+    public function getLocationDate($idUser){
+
+        $qb = $this->createQueryBuilder('l');
+        $qb
+            ->select('l.startDate, l.endDate, a.city, a.address')
+            ->innerJoin(Announce::class, 'a', Join::WITH, 'a.id = l.announce')
+            ->where('l.startDate < CURRENT_DATE()')
+            ->andWhere('l.endDate > CURRENT_DATE() AND l.user = :idUser')
+            ->setParameter('idUser', $idUser)
+            ->orderBy('l.startDate', 'desc');
+        return $qb->getQuery()->getArrayResult();
     }
 
     // /**
