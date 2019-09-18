@@ -3,17 +3,17 @@
 namespace App\Form;
 
 use App\Entity\User;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\{
+    AbstractType, FormBuilderInterface
+};
+use Symfony\Component\Form\Extension\Core\Type\{
+    DateType, EmailType, IntegerType,
+    NumberType, PasswordType, TextType
+};
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\{
+    NotBlank, Length
+};
 
 class RegistrationFormType extends AbstractType
 {
@@ -27,8 +27,6 @@ class RegistrationFormType extends AbstractType
                 ],
             ])
             ->add('plainPassword', PasswordType::class, [
-                // instead of being set onto the object directly,
-                // this is read and encoded in the controller
                 'mapped' => false,
                 'attr' => [
                     'class' => 'form-control',
@@ -41,7 +39,6 @@ class RegistrationFormType extends AbstractType
                     new Length([
                         'min' => 6,
                         'minMessage' => 'Votre mot de passe doit comporter au minimum {{ limit }} caractères',
-                        // max length allowed by Symfony for security reasons
                         'max' => 4096,
                     ]),
                 ],
@@ -73,11 +70,17 @@ class RegistrationFormType extends AbstractType
                     'placeholder' => 'Adresse'
                 ],
             ])
-            ->add('zipcode',NumberType::class,[
+            ->add('zipcode',IntegerType::class,[
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'Code Postal'
 
+                ],
+                'constraints' => [
+                    new Length([
+                        'min' => 5,
+                        'max' => 5,
+                    ]),
                 ],
             ])
             ->add('city',TextType::class,[
@@ -87,11 +90,10 @@ class RegistrationFormType extends AbstractType
 
                 ],
             ])
-            ->add('phone',TextType::class,[
+            ->add('phone',NumberType::class,[
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'Téléphone'
-
                 ],
             ])
 
