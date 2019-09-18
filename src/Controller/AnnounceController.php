@@ -43,16 +43,16 @@ class AnnounceController extends AbstractController
         ]);
     }
 
-    /*
+    /**
      * @IsGranted("IS_AUTHENTICATED_FULLY")
-     * @Route("/add/vehicle", name="vehicleAnnoune")
+     * @Route("/add/vehicle", name="vehicleAnnounce")
      * @param Request $request
      * @return RedirectResponse|Response
      */
     public function addVehicleAction(Request $request)
     {
         $form = $this->createForm(RentalType::class, $vehicle = new Vehicle(), [
-            'action' => $this->generateUrl('vehicleAnnoune'),
+            'action' => $this->generateUrl('vehicleAnnounce'),
             'method' => 'POST'
         ]);
         $form->handleRequest($request);
