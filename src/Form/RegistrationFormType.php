@@ -7,8 +7,8 @@ use Symfony\Component\Form\{
     AbstractType, FormBuilderInterface
 };
 use Symfony\Component\Form\Extension\Core\Type\{
-    DateType,EmailType, IntegerType,
-    PasswordType, TextType
+    DateType, EmailType, IntegerType,
+    NumberType, PasswordType, TextType
 };
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\{
@@ -90,7 +90,7 @@ class RegistrationFormType extends AbstractType
 
                 ],
             ])
-            ->add('phone',IntegerType::class,[
+            ->add('phone',NumberType::class,[
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'Téléphone'
