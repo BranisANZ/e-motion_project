@@ -23,15 +23,12 @@ class UserController extends AbstractController
      * @param UserPasswordEncoderInterface $passwordEncoder
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function index(Request $request,UserPasswordEncoderInterface $passwordEncoder)
+    public function register(Request $request,UserPasswordEncoderInterface $passwordEncoder)
     {
-        $user = new User();
-        $formRegister = $this->createForm(RegistrationFormType::class,$user);
-
+        $formRegister = $this->createForm(RegistrationFormType::class, $user = new User());
         $formRegister->handleRequest($request);
 
         if ($formRegister->isSubmitted() && $formRegister->isValid()) {
-            // encode the plain password
             $user->setPassword(
                 $passwordEncoder->encodePassword(
                     $user,
@@ -43,10 +40,8 @@ class UserController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // do anything else you need here, like send an email
             return $this->redirectToRoute('home');
         }
-
 
         return $this->render('user/register.html.twig', [
             'controller_name' => 'UserController',
@@ -56,19 +51,15 @@ class UserController extends AbstractController
 
     /**
      * @Route("/login", name="login")
+     * @param AuthenticationUtils $authenticationUtils
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function login(AuthenticationUtils $authenticationUtils)
     {
-        // get the login error if there is one
-        $error = $authenticationUtils->getLastAuthenticationError();
-        // last username entered by the user
-        $lastUsername = $authenticationUtils->getLastUsername();
-
         return $this->render('user/login.html.twig', [
-            'last_username' => $lastUsername,
-            'error' => $error
+            'last_username' => $authenticationUtils->getLastUsername(),
+            'error'         => $authenticationUtils->getLastAuthenticationError()
         ]);
-
     }
 
     /**

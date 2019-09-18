@@ -3,11 +3,43 @@
 {% block title %}Louer son véhicule{% endblock %}
 
 {% block body %}
-    <div class="container" style="margin-top: 5rem">
-        <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 offset-lg-3 offset-md-3">
-                {% block announcement_body %}{% endblock %}
+    <div class="r-header r-header-inner">
+        <div class="r-header-inner-banner">
+            <div class="r-header-in-over">
+                <h1><b>Louer mon vehicule</b></h1>
+                <div class="r-breadcrum">
+                    <ul>
+                        <li><a href="{{ path('home') }}">Accueil</a></li>
+                        <li><span>Louer mon vehicule</span></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
+    {% block announcement_body %}{% endblock %}
+    <section id="r-get-in-touch">
+        <div class="r-get-in-touch">
+            <div class="container">
+                <div class="r-get-header">
+                    <span>CONTACT US NOW</span>
+                    <h2>Keep <b>In Touch.</b></h2>
+                </div>
+                <div class="r-get-form">
+                    <form action="login-register.html#">
+                        <div class="clearfix">
+                            <div class="form-group"><input type="text" placeholder="User name"></div>
+                            <div class="form-group"><input type="email" placeholder="Email Address"></div>
+                        </div>
+                        <div class="form-group"><input type="email" placeholder="Title Message"></div>
+                        <div class="form-group">
+                            <textarea placeholder="Message"></textarea>
+                        </div>
+                        <div class="text-center">
+                            <button class="btn btn-full">SEND MESSAGE NOW</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
 {% endblock %}
