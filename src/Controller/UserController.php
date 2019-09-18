@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Location;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -68,6 +69,24 @@ class UserController extends AbstractController
     {
         // controller can be blank: it will never be executed!
         throw new \Exception('Don\'t forget to activate logout in security.yaml');
+    }
+
+    /**
+     * @param Request $request
+     * @Route("/history/{id}", name="history", methods={"GET"})
+     */
+    public function history(User $user)
+    {
+        $repository = $this->getDoctrine()->getRepository(Location::class);
+        $locationPast = $repository->getLocationPast($user->getId());
+        $locationFutur = $repository->getLocationFutur($user->getId());
+        $locationDate = $repository->getLocationDate($user->getId());
+
+        return $this->render('user/history.html.twig', [
+            'locationPast' => $locationPast,
+            'locationFutur' => $locationFutur,
+            'locationDate' => $locationDate
+        ]);
     }
 
 

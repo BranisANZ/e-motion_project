@@ -1,0 +1,108 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Historique{% endblock %}
+
+{% block body %}
+    <section id="r-login-register">
+        <div class="r-login-register">
+            <div class="r-login-register-in" style="display: flex;justify-content: center">
+                <div class="col-md-8">
+                    <div class="r-auth-outer">
+                        <div class="r-auth-head">
+                            <h2><b>Historique des locations</b></h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if locationFutur|length != 0 %}
+                <table class="table">
+                    <caption>Location en attente</caption>
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>Marque</th>
+                        <th>Imatriculation</th>
+                        <th>Adresse</th>
+                        <th>Ville</th>
+                        <th>Date de début</th>
+                        <th>Date de fin</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for futur in locationFutur %}
+                        <tr>
+                            <td>{{ futur.brand }}</td>
+                            <td>{{ futur.matriculation }}</td>
+                            <td>{{ futur.address }}</td>
+                            <td>{{ futur.city }}</td>
+                            <td>{{ futur.startDate | date('j/m/Y') }}</td>
+                            <td>{{ futur.endDate | date('j/m/Y') }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>Aucune location en attente</p>
+            {% endif %}
+
+            {% if locationDate|length != 0 %}
+            <table class="table">
+                <caption>Location en cours</caption>
+                <thead class="thead-dark">
+                <tr>
+                    <th>Marque</th>
+                    <th>Imatriculation</th>
+                    <th>Adresse</th>
+                    <th>Ville</th>
+                    <th>Date de début</th>
+                    <th>Date de fin</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for date in locationDate %}
+                    <tr>
+                        <td>{{ date.brand }}</td>
+                        <td>{{ date.matriculation }}</td>
+                        <td>{{ date.address }}</td>
+                        <td>{{ date.city }}</td>
+                        <td>{{ date.startDate | date('j/m/Y') }}</td>
+                        <td>{{ date.endDate | date('j/m/Y') }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <p>Aucune location en cours</p>
+            {% endif %}
+
+            {% if locationPast|length != 0 %}
+            <table class="table">
+                <caption>Dernière location</caption>
+                <thead class="thead-dark">
+                <tr>
+                    <th>Marque</th>
+                    <th>Imatriculation</th>
+                    <th>Adresse</th>
+                    <th>Ville</th>
+                    <th>Date de début</th>
+                    <th>Date de fin</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for past in locationPast %}
+                    <tr>
+                        <td>{{ past.brand }}</td>
+                        <td>{{ past.matriculation }}</td>
+                        <td>{{ past.address }}</td>
+                        <td>{{ past.city }}</td>
+                        <td>{{ past.startDate | date('j/m/Y') }}</td>
+                        <td>{{ past.endDate | date('j/m/Y') }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <p>Aucune location passé</p>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}
