@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <div class="container mt-100">
+        <div class="row">
+            <div class="col">
+            </div>
+            <div class="col">
+                {% set zindex = 0 %}
+                {% set id = 0 %}
+                {% for annonce in annonces %}
+                    <div style="z-index: {{ zindex }}; position: absolute">
+                        <div class="card" id="card{{ id }}">
+                            <div class="card-body">
+                                <h4 class="card-title">{{ annonce.vehicle.brand }}</b> {{ annonce.vehicle.model }}</h4>
+                                <img src="{{ annonce.vehicle.photo }}">
+                                <p class="card-text">
+                                    {{ annonce.price }}€ /J<br>
+                                    {{ annonce.address }} {{ annonce.city }}
+                                </p>
+                                <div class="r-best-offer-content">
+                                    <ul class="pl-0 mb-0">
+                                        <li><i class="fa fa-car"></i><span>{{ annonce.vehicle.year | date('Y') }}</span>
+                                        </li>
+                                        <li><i class="fa fa-road"></i><span>{{ annonce.vehicle.autonomy }} Km</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <button id="{{ id }}" class="btn btn-danger btnnon" onClick="reply_click(this.id)">Non</button>
+                                <a href=""><button class="btn btn-warning text-right"><i class="fa fa-bolt"></i> Réservation instantanée</button></a>
+                            </div>
+                        </div>
+                    </div>
+                    {% set zindex = zindex - 1 %}
+                    {% set id = id + 1 %}
+                {% endfor %}
+            </div>
+            <div class="col">
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+{{ parent() }}
+    <script type="application/javascript">
+        function reply_click(id)
+        {
+            const card = document.querySelector('#card'+id);
+            console.log(card);
+            card.style.display = 'none';
+        }
+
+         btnNon = document.querySelectorAll('.btnnon');
+        console.log(btnNon);
+         for (var i = 0; i < btnNon.length; i++) {
+             btnNon[i].addEventListener('click', (event) => {
+                 const id = this.id;
+                 console.log(id);
+                 const card = document.querySelector('#card'+id);
+                 console.log(card);
+                 card.style.display = 'none';
+             })
+         }
+
+    </script>
+{% endblock %}
