@@ -78,21 +78,25 @@
                                     </div>
                                 {% endif %}
                             </div>
-                            <div class="form-group">
-                                {{ form_label(form.door) }}
-                                {{ form_widget(form.door) }}
-                                {% if form_errors(form.door) %}
-                                    <div class="alert alert-danger" role="alert">
-                                        {{ form_errors(form.door) }}
+                            <div id="div-ajax">
+                                {% if form.door is defined and form.place is defined %}
+                                    <div class="form-group">
+                                        {{ form_label(form.door) }}
+                                        {{ form_widget(form.door) }}
+                                        {% if form_errors(form.door) %}
+                                            <div class="alert alert-danger" role="alert">
+                                                {{ form_errors(form.door) }}
+                                            </div>
+                                        {% endif %}
                                     </div>
-                                {% endif %}
-                            </div>
-                            <div class="form-group">
-                                {{ form_label(form.place) }}
-                                {{ form_widget(form.place) }}
-                                {% if form_errors(form.place) %}
-                                    <div class="alert alert-danger" role="alert">
-                                        {{ form_errors(form.place) }}
+                                    <div class="form-group">
+                                        {{ form_label(form.place) }}
+                                        {{ form_widget(form.place) }}
+                                        {% if form_errors(form.place) %}
+                                            <div class="alert alert-danger" role="alert">
+                                                {{ form_errors(form.place) }}
+                                            </div>
+                                        {% endif %}
                                     </div>
                                 {% endif %}
                             </div>
@@ -106,4 +110,16 @@
             </div>
         </div>
     </section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="application/javascript">
+        $(function() {
+            formDataChange($("#{{ form.type.vars.id }}"));
+            $("#{{ form.type.vars.id }}").on('change', function () {
+                formDataChange($(this));
+            });
+        });
+    </script>
 {% endblock %}
