@@ -46,10 +46,11 @@ class AnnounceController extends AbstractController
     /**
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @Route("/add/vehicle", name="vehicleAnnounce")
+     * @param Security $security
      * @param Request $request
      * @return RedirectResponse|Response
      */
-    public function addVehicleAction(Request $request)
+    public function addVehicleAction(Security $security, Request $request)
     {
         $form = $this->createForm(RentalType::class, $vehicle = new Vehicle(), [
             'action' => $this->generateUrl('vehicleAnnounce'),
@@ -63,11 +64,22 @@ class AnnounceController extends AbstractController
                 $request->request->get('rental')['_token']
             )) {
                 $em = $this->getDoctrine()->getManager();
-                $em->persist($vehicle);
-                $em->flush();
+                $repoVehicle = $em->getRepository(Vehicle::class);
+
+                if (!$vehicleBDD = $repoVehicle->findOneBy([
+                    'user'          => $user = $security->getUser(),
+                    'matriculation' => $vehicle->getMatriculation()])) {
+                    $vehicle->setUser($user);
+                    $em->persist($vehicle);
+                    $em->flush();
+
+                    return $this->redirectToRoute('announcement', [
+                        'vehicleId' => $vehicle->getId(),
+                    ]);
+                }
 
                 return $this->redirectToRoute('announcement', [
-                    'vehicleId' => $vehicle->getId(),
+                    'vehicleId' => $vehicleBDD->getId(),
                 ]);
             }
         }
