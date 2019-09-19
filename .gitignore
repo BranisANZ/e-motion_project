@@ -2,7 +2,6 @@
 /.env.local
 /.env.local.php
 /.env.*.local
-/.env
 /.DS_Store
 /public/bundles/
 /var/
