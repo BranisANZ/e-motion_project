@@ -75,20 +75,28 @@ class UserController extends AbstractController
      * @param Request $request
      * @Route("/history/{id}", name="history", methods={"GET"})
      */
-    public function history(User $user)
+    public function history(User $user) //faire en sorte de comparer le user id à celui du user connecté
     {
-        $repository = $this->getDoctrine()->getRepository(Location::class);
-        $locationPast = $repository->getLocationPast($user->getId());
-        $locationFutur = $repository->getLocationFutur($user->getId());
-        $locationDate = $repository->getLocationDate($user->getId());
+        $userConnected = $this->getUser();
 
-        dump($locationPast, $locationFutur, $locationDate);
+        $locationPast = $locationFutur = $locationDate = "";
+        if(!empty($userConnected)) {
+            if ($userConnected == $user) {
+                $repository = $this->getDoctrine()->getRepository(Location::class);
+                $locationPast = $repository->getLocationPast($user->getId());
+                $locationFutur = $repository->getLocationFutur($user->getId());
+                $locationDate = $repository->getLocationDate($user->getId());
 
-        return $this->render('user/history.html.twig', [
-            'locationPast' => $locationPast,
-            'locationFutur' => $locationFutur,
-            'locationDate' => $locationDate
-        ]);
+
+                return $this->render('user/history.html.twig', [
+                    'locationPast' => $locationPast,
+                    'locationFutur' => $locationFutur,
+                    'locationDate' => $locationDate,
+                ]);
+            }
+            return $this->redirectToRoute('home');
+        }
+        return $this->redirectToRoute('user_login');
     }
 
 
