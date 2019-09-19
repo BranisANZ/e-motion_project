@@ -21,7 +21,6 @@ class RentalType extends AbstractType
     {
         $builder->add('type', ChoiceType::class, [
             'label'      => 'Type :',
-            'empty_data' => Vehicle::$types[0],
             'required'   => true,
             'attr'       => [
                 'class'  => 'form-control'
