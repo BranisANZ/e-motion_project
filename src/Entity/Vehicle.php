@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\VehicleRepository")
@@ -38,6 +39,12 @@ class Vehicle
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(
+     *      min = 7,
+     *      max = 8,
+     *      minMessage = "Ton numero de matricule doit comporter au minimum {{ limit }} chiffres",
+     *      maxMessage = "Ton numero de matricule doit comporter au maximum {{ limit }} chiffres"
+     * )
      */
     private $matriculation;
 
@@ -63,6 +70,7 @@ class Vehicle
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Assert\Choice({3, 5 , 7}, message="Cenombre de porte est impossible")
      */
     private $door;
 
