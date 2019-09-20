@@ -1,7 +1,7 @@
 version: '3.6'
 services:
   php:
-    image: 'chialab/php-dev:7.2-apache'
+    image: 'chialab/php-dev:7.3-apache'
     volumes:
       - '.:/var/www/html:cached'
       - './000-default.conf:/etc/apache2/sites-available/000-default.conf:cached'

@@ -27,6 +27,21 @@ class HomeController extends AbstractController
             'method' => 'GET'
         ]);
 
+        $searchForm2 = $this->createForm(SearchAnnounceType::class);
+        $searchForm2->handleRequest($request);
+        if ($searchForm2->isSubmitted() && $searchForm2->isValid()){
+            $em = $this->getDoctrine();
+            $repoAnnounce = $em->getRepository(Announce::class);
+            $data = $searchForm->getData();
+            $annonces = $repoAnnounce->findForSearchSwipe($data);
+            dump($annonces);
+
+            return $this->render('announce/swipe.html.twig', [
+                "searchForm" => $searchForm2->createView(),
+                "annonces" => $annonces
+                ]);
+        }
+  
         if($request->isXmlHttpRequest()) {
             if ($searchForm->handleRequest($request)->isValid()) {
                 $data = $searchForm->getData();
@@ -41,6 +56,7 @@ class HomeController extends AbstractController
 
         return $this->render('home/index.html.twig', [
             "searchForm" => $searchForm->createView(),
+            'searchForm2' => $searchForm2->createView(),
             "annonces"   => $annonces,
         ]);
     }

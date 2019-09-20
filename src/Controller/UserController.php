@@ -72,23 +72,47 @@ class UserController extends AbstractController
     }
 
     /**
-     * @param Request $request
-     * @Route("/history/{id}", name="history", methods={"GET"})
+     * @Route("/history", name="history")
      */
-    public function history(User $user)
+    public function history()
     {
-        $repository = $this->getDoctrine()->getRepository(Location::class);
-        $locationPast = $repository->getLocationPast($user->getId());
-        $locationFutur = $repository->getLocationFutur($user->getId());
-        $locationDate = $repository->getLocationDate($user->getId());
+        $userConnected = $this->getUser();
+        if(!empty($userConnected)) {
+            $locationPast = $locationFutur = $locationDate = "";
+            $idUserConnected = $userConnected->getId();
+            $repository = $this->getDoctrine()->getRepository(Location::class);
+            $locationPast = $repository->getLocationPast($idUserConnected);
+            $locationFutur = $repository->getLocationFutur($idUserConnected);
+            $locationDate = $repository->getLocationDate($idUserConnected);
 
-        return $this->render('user/history.html.twig', [
-            'locationPast' => $locationPast,
-            'locationFutur' => $locationFutur,
-            'locationDate' => $locationDate
-        ]);
+            return $this->render('user/history.html.twig', [
+                'locationPast' => $locationPast,
+                'locationFutur' => $locationFutur,
+                'locationDate' => $locationDate,
+            ]);
+        }
+
+        return $this->redirectToRoute('user_login');
     }
 
+    /**
+     * @Route("/account", name="account")
+     */
+    public function account(Request $request){
+        $userConnected = $this->getUser();
+        if(!empty($userConnected)){
+            $idUser = $userConnected->getId();
+            $repository = $this->getDoctrine()->getRepository(User::class);
+            $infoUser = $repository->find($idUser);
+            $formUser = $this->createForm(RegistrationFormType::class, $user = new User());
+            $formUser->handleRequest($request);
 
+            return $this->render('user/account.html.twig', [
+                'infoUser' => $infoUser,
+                'formUser' => $formUser
+            ]);
+        }
 
+        return $this->redirectToRoute('user_login');
+    }
 }

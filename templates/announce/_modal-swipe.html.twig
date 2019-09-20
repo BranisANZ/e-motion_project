@@ -1,0 +1,19 @@
+{% set id = 0 %}
+{% for annonce in annonces %}
+<div class="modal fade bd-example-modal-lg{{ id }}" style="z-index: 10000; position: absolute" tabindex="10000" role="dialog"
+     aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg d-flex justify-content-center">
+        <div class="modal-content">
+            <h4 class="pt-2 pl-2">{{ annonce.vehicle.brand }}</b> {{ annonce.vehicle.model }}</h4>
+            <img src="{{ annonce.vehicle.photo }}" width="20%">
+            {{ annonce.price }}€ /J<br>
+            {{ annonce.address }} {{ annonce.city }}
+
+            {% for comment in annonce.comments %}
+                {{ comment.rate }}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% set id = id + 1 %}
+{% endfor %}

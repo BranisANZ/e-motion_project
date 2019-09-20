@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <div class="container mt-100">
+        <div class="row">
+            <div class="col d-flex justify-content-center">
+                {% set id = 0 %}
+                {% for annonce in annonces %}
+                    <div style="z-index: {{ id }}; position: absolute">
+                        <div class="card" id="card{{ id }}">
+                            <div class="card-body">
+                                <h4 class="card-title">{{ annonce.vehicle.brand }}</b> {{ annonce.vehicle.model }}</h4>
+                                <img src="{{ annonce.vehicle.photo }}" width="100%">
+                                <p class="card-text">
+                                    {{ annonce.price }}€ /J<br>
+                                    {{ annonce.address }} {{ annonce.city }}
+                                </p>
+                                <div class="r-best-offer-content">
+                                    <ul class="pl-0 mb-0">
+                                        <li><i class="fa fa-car"></i><span>{{ annonce.vehicle.year | date('Y') }}</span>
+                                        </li>
+                                        <li><i class="fa fa-road"></i><span>{{ annonce.vehicle.autonomy }} Km</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="row">
+                                    <div class="col-2">
+                                        <button id="{{ id }}" class="btn btn-danger btnNon">Non</button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button class="btn btn-warning" data-toggle="modal"
+                                                data-target=".bd-example-modal-lg{{ id }}">
+                                            Infos
+                                        </button>
+                                    </div>
+                                    <div class="col-2">
+                                        <a href="">
+                                            <button class="btn btn-success text-right"><i class="fa fa-bolt"></i>
+                                                Réservation instantanée
+                                            </button>
+                                        </a>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    {% set id = id + 1 %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% include "announce/_modal-swipe.html.twig" %}
+
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="application/javascript">
+
+        $(function () {
+
+            $('.btnNon').click(function (event) {
+                id = event.target.id;
+                $('#card' + id).animate({
+                    right: '250px',
+                    opacity: '0'
+                }, function () {
+                    $(this).remove();
+                });
+
+
+            });
+        });
+
+        /* btnNon = document.querySelectorAll('.btnnon');
+        console.log(btnNon);
+         for (var i = 0; i < btnNon.length; i++) {
+             btnNon[i].addEventListener('click', (event) => {
+                 const id = this.id;
+                 console.log(id);
+                 const card = document.querySelector('#card'+id);
+                 console.log(card);
+                 card.style.display = 'none';
+             })
+         }*/
+    </script>
+{% endblock %}

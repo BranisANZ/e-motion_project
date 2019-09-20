@@ -46,8 +46,35 @@ class AnnounceRepository extends ServiceEntityRepository
         }
 
         return $search->getQuery()->getResult();
+    }
 
+    /**
+     * @return Announce[] Returns an array of Announce objects
+     */
+    public function findForSearchSwipe($value)
+    {
+    $search = $this->createQueryBuilder('a')
+        ->orderBy('a.id', 'ASC')
+        ;
 
+        if($value['type'] != null){
+            $search->innerJoin('a.vehicle', 'v')
+                ->andWhere('v.type = :type')
+                ->setParameter('type',$value['type'])
+            ;
+        }
+        if($value['minPrice'] != null){
+            $search->andWhere('a.price >= :priceMini')
+                ->setParameter('priceMini',$value['minPrice'])
+            ;
+        }
+        if($value['maxPrice'] != null){
+            $search->andWhere('a.price <= :maxPrice')
+                ->setParameter('maxPrice',$value['maxPrice'])
+            ;
+        }
+
+        return $search->getQuery()->getResult();
     }
 
 
