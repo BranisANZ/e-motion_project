@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Form\searchAnnounceType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{
@@ -22,27 +21,6 @@ use App\Form\{
  */
 class AnnounceController extends AbstractController
 {
-    /**
-     * @Route("/", name="index")
-     */
-    public function index(Request $request): Response
-    {
-        $em = $this->getDoctrine();
-        $repoAnnounce = $em->getRepository(Announce::class);
-        $annonces = $repoAnnounce->findAll();
-        $searchForm = $this->createForm(searchAnnounceType::class);
-        $searchForm->handleRequest($request);
-        if ($searchForm->isSubmitted() && $searchForm->isValid()){
-            $data = $searchForm->getData();
-            $annonces = $repoAnnounce->findForSearch($data);
-        }
-        return $this->render('announce/index.html.twig', [
-            "searchForm" => $searchForm->createView(),
-            "annonces" => $annonces,
-
-        ]);
-    }
-
     /**
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @Route("/add/vehicle", name="vehicleAnnounce")

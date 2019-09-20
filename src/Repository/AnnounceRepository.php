@@ -28,6 +28,12 @@ class AnnounceRepository extends ServiceEntityRepository
             ->orderBy('a.id', 'ASC')
         ;
 
+        if($value['type'] != null){
+            $search->innerJoin('a.vehicle', 'v')
+                ->andWhere('v.type = :type')
+                ->setParameter('type',$value['type'])
+            ;
+        }
         if($value['minPrice'] != null){
             $search->andWhere('a.price >= :priceMini')
                 ->setParameter('priceMini',$value['minPrice'])
@@ -38,7 +44,7 @@ class AnnounceRepository extends ServiceEntityRepository
                 ->setParameter('maxPrice',$value['maxPrice'])
             ;
         }
-        dump($search);
+
         return $search->getQuery()->getResult();
 
 
