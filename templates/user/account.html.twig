@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Account{% endblock %}
+
+{% block body %}
+    <div class="r-header r-header-inner">
+        <div class="r-header-inner-banner">
+            <div class="r-header-in-over">
+                <h1><b>Mon compte</b></h1>
+                <div class="r-breadcrum">
+                    <ul>
+                        <li><a href="{{ path('home') }}">Accueil</a></li>
+                        <li><span>Mon compte</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <a href="{{ path('user_history') }}">Mes locations</a>
+        </div>
+    </div>
+
+    <!-- a voir s'il faut garder le style -->
+    <style>
+        .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+            background-color: #ffff00;
+        }
+    </style>
+
+    <div>
+        <table class="table table-striped">
+            <tbody>
+                <tr><td><b>Nom : </b></td><td>{{ infoUser.lastName }}</td></tr>
+                <tr><td><b>Prénom : </b></td><td>{{ infoUser.firstname }}</td></tr>
+                <tr><td><b>Date de naissance : </b></td><td>{{ infoUser.birthdayDate | date('Y-m-d') }}</td></tr>
+                <tr><td><b>Adresse : </b></td><td>{{ infoUser.address }}</td></tr>
+                <tr><td><b>Code postal : </b></td><td>{{ infoUser.zipCode }}</td></tr>
+                <tr><td><b>Ville : </b></td><td>{{ infoUser.city }}</td></tr>
+                <tr><td><b>N° Téléphone : </b></td><td>{{ infoUser.phone }}</td></tr>
+                <tr><td><b>Email : </b></td><td>{{ infoUser.email }}</td></tr>
+                <tr><td><b>Points de fidélités : </b></td><td>{{ (infoUser.loyaltyPoints != 0) ? infoUser.loyaltyPoint : 0}}</td></tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
