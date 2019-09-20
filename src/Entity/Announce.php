@@ -30,7 +30,7 @@ class Announce
     private $user;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="anounce")
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="announce")
      */
     private $comments;
 

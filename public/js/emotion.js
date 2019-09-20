@@ -14,3 +14,9 @@ function formDataChange(btnModifier) {
         );
     });
 }
+
+function swipeHide(btnNon) {
+    id = this.id;
+    console.log(id);
+    console.log(btnNon);
+}

@@ -24,7 +24,8 @@ class HomeController extends AbstractController
             $em = $this->getDoctrine();
             $repoAnnounce = $em->getRepository(Announce::class);
             $data = $searchForm->getData();
-            $annonces = $repoAnnounce->findForSearch($data);
+            $annonces = $repoAnnounce->findForSearchSwipe($data);
+            dump($annonces);
 
             return $this->render('announce/swipe.html.twig', [
                 "searchForm" => $searchForm->createView(),
