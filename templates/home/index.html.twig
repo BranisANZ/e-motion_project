@@ -25,47 +25,51 @@
 
     <div class="r-car-search">
         <div class="container">
-            <div class="form-group">
-                <button type="button" class="btn btn-success center" data-toggle="modal" data-target="#e-swipeForm">
-                    E-SWIPE
-                </button>
-                {% include 'modal/_modal-form-e-swip.html.twig' %}
-
+            <div class="r-top-form-title animated fadeInUp">
+                <span>120+ CARS TYPE & BRANDS</span>
+                <h3 style="color:black">Search Your <b>Best Cars.</b></h3>
             </div>
+            {{ form_start(searchForm) }}
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <label> Type </label>
+                            {{ form_widget(searchForm.type) }}
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <label> Prix </label>
+                            {{ form_widget(searchForm.minPrice) }}
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            {{ form_widget(searchForm.maxPrice) }}
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <button type="submit"
+                                    id="searchAnnouncement"
+                                    class="form-control btn-primary">
+                                Rechercher !
+                            </button>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-success center" data-toggle="modal" data-target="#e-swipeForm">
+                                E-SWIPE
+                            </button>
+                            {% include 'modal/_modal-form-e-swip.html.twig' %}
+
+                        </div>
+                    </div>
+                </div>
+            {{ form_end(searchForm) }}
         </div>
     </div>
     <section id="r-advantages-part" class="r-advantages-part">
-        <div class="r-advantage-main-part">
-            <div class="container clearfix">
-                <div class="advantage-head">
-                    <span>120+ CARS TYPE &amp; BRANDS</span>
-                    <h2>Royal Cars <b>Advantages.</b></h2>
-                </div>
-                <div class="row clearfix">
-                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12">
-                        <div class="r-advantages-box">
-                            <div class="icon"> <img src="/images/advantage-icon-1.png" alt=""> </div>
-                            <div class="head animated pulse">24/7 Customer Online Support</div>
-                            <div class="sub-text">Call us Anywhere Anytime</div>
-                        </div>
-                    </div>
-                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12">
-                        <div class="r-advantages-box">
-                            <div class="icon"> <img src="/images/advantage-icon-2.png" alt=""> </div>
-                            <div class="head animated pulse">Reservation Anytime You Wants</div>
-                            <div class="sub-text">24/7 Online Reservation</div>
-                        </div>
-                    </div>
-                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12">
-                        <div class="r-advantages-box">
-                            <div class="icon"> <img src="/images/advantage-icon-3.png" alt=""> </div>
-                            <div class="head animated pulse">Lots of Picking Locations</div>
-                            <div class="sub-text">250+ Locations</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {% include 'home/partials/_announcement_list.html.twig' %}
     </section>
     <section id="r-about-info">
         <div class="r-about-info">

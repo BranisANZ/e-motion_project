@@ -28,7 +28,12 @@ class AnnounceRepository extends ServiceEntityRepository
             ->orderBy('a.id', 'ASC')
         ;
 
-
+        if($value['type'] != null){
+            $search->innerJoin('a.vehicle', 'v')
+                ->andWhere('v.type = :type')
+                ->setParameter('type',$value['type'])
+            ;
+        }
         if($value['minPrice'] != null){
             $search->andWhere('a.price >= :priceMini')
                 ->setParameter('priceMini',$value['minPrice'])
@@ -39,9 +44,8 @@ class AnnounceRepository extends ServiceEntityRepository
                 ->setParameter('maxPrice',$value['maxPrice'])
             ;
         }
+
         return $search->getQuery()->getResult();
-
-
     }
 
     /**
@@ -53,7 +57,12 @@ class AnnounceRepository extends ServiceEntityRepository
         ->orderBy('a.id', 'ASC')
         ;
 
-
+        if($value['type'] != null){
+            $search->innerJoin('a.vehicle', 'v')
+                ->andWhere('v.type = :type')
+                ->setParameter('type',$value['type'])
+            ;
+        }
         if($value['minPrice'] != null){
             $search->andWhere('a.price >= :priceMini')
                 ->setParameter('priceMini',$value['minPrice'])
@@ -65,10 +74,7 @@ class AnnounceRepository extends ServiceEntityRepository
             ;
         }
 
-
         return $search->getQuery()->getResult();
-
-
     }
 
 

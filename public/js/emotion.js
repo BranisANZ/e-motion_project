@@ -15,8 +15,19 @@ function formDataChange(btnModifier) {
     });
 }
 
-function swipeHide(btnNon) {
-    id = this.id;
-    console.log(id);
-    console.log(btnNon);
-}
+$(function() {
+    $("#searchAnnouncement").on("click", function() {
+        var _form = $(this).closest('form');
+        if(_form.valid()){
+            $.ajax({
+                type: 'GET',
+                url: _form.attr('action'),
+                data: _form.serialize(),
+                dataType: "json",
+            }).then(function(response) {
+                $('#r-advantages-part').empty().append(response.html.content);
+            });
+        }
+        return false;
+    });
+});
