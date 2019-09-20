@@ -72,7 +72,6 @@ class UserController extends AbstractController
     }
 
     /**
-     * @param Request $request
      * @Route("/history", name="history")
      */
     public function history()
@@ -90,6 +89,27 @@ class UserController extends AbstractController
                 'locationPast' => $locationPast,
                 'locationFutur' => $locationFutur,
                 'locationDate' => $locationDate,
+            ]);
+        }
+
+        return $this->redirectToRoute('user_login');
+    }
+
+    /**
+     * @Route("/account", name="account")
+     */
+    public function account(Request $request){
+        $userConnected = $this->getUser();
+        if(!empty($userConnected)){
+            $idUser = $userConnected->getId();
+            $repository = $this->getDoctrine()->getRepository(User::class);
+            $infoUser = $repository->find($idUser);
+            $formUser = $this->createForm(RegistrationFormType::class, $user = new User());
+            $formUser->handleRequest($request);
+
+            return $this->render('user/account.html.twig', [
+                'infoUser' => $infoUser,
+                'formUser' => $formUser
             ]);
         }
 
