@@ -73,29 +73,26 @@ class UserController extends AbstractController
 
     /**
      * @param Request $request
-     * @Route("/history/{id}", name="history", methods={"GET"})
+     * @Route("/history", name="history")
      */
-    public function history(User $user) //faire en sorte de comparer le user id à celui du user connecté
+    public function history()
     {
         $userConnected = $this->getUser();
-
-        $locationPast = $locationFutur = $locationDate = "";
         if(!empty($userConnected)) {
-            if ($userConnected == $user) {
-                $repository = $this->getDoctrine()->getRepository(Location::class);
-                $locationPast = $repository->getLocationPast($user->getId());
-                $locationFutur = $repository->getLocationFutur($user->getId());
-                $locationDate = $repository->getLocationDate($user->getId());
+            $locationPast = $locationFutur = $locationDate = "";
+            $idUserConnected = $userConnected->getId();
+            $repository = $this->getDoctrine()->getRepository(Location::class);
+            $locationPast = $repository->getLocationPast($idUserConnected);
+            $locationFutur = $repository->getLocationFutur($idUserConnected);
+            $locationDate = $repository->getLocationDate($idUserConnected);
 
-
-                return $this->render('user/history.html.twig', [
-                    'locationPast' => $locationPast,
-                    'locationFutur' => $locationFutur,
-                    'locationDate' => $locationDate,
-                ]);
-            }
-            return $this->redirectToRoute('home');
+            return $this->render('user/history.html.twig', [
+                'locationPast' => $locationPast,
+                'locationFutur' => $locationFutur,
+                'locationDate' => $locationDate,
+            ]);
         }
+
         return $this->redirectToRoute('user_login');
     }
 }
