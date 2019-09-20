@@ -29,12 +29,12 @@ class HomeController extends AbstractController
 
         $searchForm2 = $this->createForm(SearchAnnounceType::class);
         $searchForm2->handleRequest($request);
+
         if ($searchForm2->isSubmitted() && $searchForm2->isValid()){
             $em = $this->getDoctrine();
             $repoAnnounce = $em->getRepository(Announce::class);
             $data = $searchForm->getData();
             $annonces = $repoAnnounce->findForSearchSwipe($data);
-            dump($annonces);
 
             return $this->render('announce/swipe.html.twig', [
                 "searchForm" => $searchForm2->createView(),

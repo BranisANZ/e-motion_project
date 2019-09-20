@@ -8,18 +8,18 @@
                 </button>
             </div>
             <div class="modal-body">
-                {{ form_start(searchForm) }}
+                {{ form_start(searchForm2) }}
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="row">
                             <div class="col-lg-3 col-md-3 col-sm-12 p-0">
-                                {{ form_widget(searchForm.minPrice) }}
+                                {{ form_widget(searchForm2.minPrice) }}
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-12 p-0">
-                                {{ form_widget(searchForm.maxPrice) }}
+                                {{ form_widget(searchForm2.maxPrice) }}
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-12 p-0">
-                                {{ form_widget(searchForm.type) }}
+                                {{ form_widget(searchForm2.type) }}
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-12 p-0">
                             </div>
@@ -29,7 +29,7 @@
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-success">Rechercher !</button>
-                {{ form_end(searchForm) }}
+                {{ form_end(searchForm2) }}
 
             </div>
         </div>
