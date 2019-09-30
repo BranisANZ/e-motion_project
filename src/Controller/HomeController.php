@@ -19,10 +19,10 @@ class HomeController extends AbstractController
      */
     public function index(Request $request)
     {
-        $em = $this->getDoctrine();
+        $em           = $this->getDoctrine()->getManager();
         $repoAnnounce = $em->getRepository(Announce::class);
-        $annonces = $repoAnnounce->findAll();
-        $searchForm = $this->createForm(SearchAnnounceType::class, null, [
+        $annonces     = $repoAnnounce->findAll();
+        $searchForm   = $this->createForm(SearchAnnounceType::class, null, [
             'action' => $this->generateUrl('home'),
             'method' => 'GET'
         ]);
@@ -31,15 +31,13 @@ class HomeController extends AbstractController
         $searchForm2->handleRequest($request);
 
         if ($searchForm2->isSubmitted() && $searchForm2->isValid()){
-            $em = $this->getDoctrine();
-            $repoAnnounce = $em->getRepository(Announce::class);
-            $data = $searchForm->getData();
+            $data     = $searchForm2->getData();
             $annonces = $repoAnnounce->findForSearchSwipe($data);
 
             return $this->render('announce/swipe.html.twig', [
                 "searchForm" => $searchForm2->createView(),
-                "annonces" => $annonces
-                ]);
+                "annonces"   => $annonces
+            ]);
         }
   
         if($request->isXmlHttpRequest()) {
