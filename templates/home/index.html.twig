@@ -87,10 +87,11 @@
                                 <li><i class="fa fa-check-circle"></i> Une recherche optimiser</li>
                             </ul>
                             <button type="button" class="form-control btn-primary"
-                                    data-toggle="modal" data-target="#e-swipeForm">
+                                    data-toggle="modal" data-target="#e-swipeForm"
+                                    id="eSwipe" data-href="{{ path('eSwipe') }}">
                                 E-SWIPE
                             </button>
-                            {% include 'modal/_modal-form-e-swip.html.twig' %}
+                            <div id="modal-ajax"></div>
                         </div>
                     </div>
                 </div>
