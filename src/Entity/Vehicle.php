@@ -11,8 +11,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Vehicle
 {
     public static $types = [
-        "Voiture",
-        "Scooter"
+        "voiture",
+        "scooter"
     ];
 
     /**
@@ -54,9 +54,9 @@ class Vehicle
     private $type;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=false)
      */
-    private $photo;
+    private $photo = "image-not-found.png";
 
     /**
      * @ORM\Column(type="datetime", nullable=true)

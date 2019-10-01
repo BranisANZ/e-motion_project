@@ -2,18 +2,19 @@
 
 namespace App\Form;
 
-use App\Entity\Vehicle;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\Extension\Core\Type\{
+    ChoiceType, DateType, FileType,
+    IntegerType, TextType
+};
+use Symfony\Component\Form\{
+    FormEvent, FormEvents, FormInterface,
+    FormBuilderInterface
+};
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
+
+use App\Entity\Vehicle;
 
 class RentalType extends AbstractType
 {
@@ -31,6 +32,26 @@ class RentalType extends AbstractType
             'required'    => true,
             'attr'        => [
                 'class'   => 'form-control'
+            ],
+            'constraints' => [
+                new NotBlank(),
+            ],
+        ])->add('model', TextType::class, [
+            'label'       => 'Modèle :',
+            'required'    => true,
+            'attr'        => [
+                'class'   => 'form-control'
+            ],
+            'constraints' => [
+                new NotBlank(),
+            ],
+        ])->add('photo', FileType::class, [
+            'label'       => 'Photo du véhicule :',
+            'data_class'  => null,
+            'required'    => true,
+            'attr'        => [
+                'id'      => 'customFile',
+                'class'   => 'custom-file-input'
             ],
             'constraints' => [
                 new NotBlank(),

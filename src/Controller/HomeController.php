@@ -22,7 +22,6 @@ class HomeController extends AbstractController
     {
         $em           = $this->getDoctrine()->getManager();
         $repoAnnounce = $em->getRepository(Announce::class);
-        $annonces     = $repoAnnounce->findAll();
         $searchForm   = $this->createForm(SearchAnnounceType::class, null, [
             'action' => $this->generateUrl('home'),
             'method' => 'GET'
@@ -30,11 +29,10 @@ class HomeController extends AbstractController
   
         if($request->isXmlHttpRequest()) {
             if ($searchForm->handleRequest($request)->isValid()) {
-                $data = $searchForm->getData();
 
                 return $this->json([
                     'html' => $this->render('home/partials/_announcement_list.html.twig', [
-                        "annonces"   => $repoAnnounce->findForSearch($data),
+                        "annonces"   => $repoAnnounce->findForSearch($searchForm->getData()),
                     ])
                 ]);
             }
@@ -42,7 +40,7 @@ class HomeController extends AbstractController
 
         return $this->render('home/index.html.twig', [
             "searchForm" => $searchForm->createView(),
-            "annonces"   => $annonces,
+            "annonces"   => $repoAnnounce->findAll(),
         ]);
     }
 
@@ -53,26 +51,37 @@ class HomeController extends AbstractController
      * @return Response
      */
     public function eSwipe(Request $request) {
-        $em           = $this->getDoctrine()->getManager();
-        $repoAnnounce = $em->getRepository(Announce::class);
         $searchForm  = $this->createForm(SearchAnnounceType::class, null, [
             'action' => $this->generateUrl('eSwipe'),
             'method' => 'POST'
-        ]);
-        $searchForm->handleRequest($request);
+        ])->handleRequest($request);
 
-        if ($searchForm->isSubmitted() && $searchForm->isValid()){
-            $data     = $searchForm->getData();
-            $annonces = $repoAnnounce->findForSearchSwipe($data);
+        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+            $em           = $this->getDoctrine()->getManager();
 
             return $this->render('announce/swipe.html.twig', [
                 "searchForm" => $searchForm->createView(),
-                "annonces"   => $annonces
+                "annonces"   => $em->getRepository(Announce::class)
+                                   ->findForSearchSwipe($searchForm->getData())
             ]);
         }
 
         $searchForm = $searchForm->createView();
 
         return compact('searchForm');
+    }
+
+    /**
+     * @Route("/vehicle/description/{announceId}", name="vehicleDescription")
+     * @Template("modal/_modal-swipe.html.twig")
+     * @param int $announceId
+     * @param Request $request
+     * @return Response
+     */
+    public function vehicleDescription(int $announceId, Request $request) {
+        $em       = $this->getDoctrine()->getManager();
+        $announce = $em->getRepository(Announce::class)->find($announceId);
+
+        return compact('announce');
     }
 }

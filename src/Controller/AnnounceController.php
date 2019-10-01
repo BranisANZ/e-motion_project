@@ -10,9 +10,7 @@ use Symfony\Component\HttpFoundation\{
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 
-use App\Entity\{
-    Announce, Vehicle
-};
+use App\Entity\{Announce, User, Vehicle};
 use App\Form\{
     AnnouncementType, RentalType
 };
@@ -33,20 +31,31 @@ class AnnounceController extends AbstractController
         $form = $this->createForm(RentalType::class, $vehicle = new Vehicle(), [
             'action' => $this->generateUrl('vehicleAnnounce'),
             'method' => 'POST'
-        ]);
-        $form->handleRequest($request);
+        ])->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             if ($this->isCsrfTokenValid(
                 'rental_item',
                 $request->request->get('rental')['_token']
             )) {
-                $em = $this->getDoctrine()->getManager();
+                /** @var User $user */
+                $user        = $security->getUser();
+                $em          = $this->getDoctrine()->getManager();
                 $repoVehicle = $em->getRepository(Vehicle::class);
 
                 if (!$vehicleBDD = $repoVehicle->findOneBy([
-                    'user'          => $user = $security->getUser(),
-                    'matriculation' => $vehicle->getMatriculation()])) {
+
+                    'user'          => $user,
+                    'matriculation' => $vehicle->getMatriculation()
+                ])) {
+                    $file     = $form->get('photo')->getData();
+                    $fileName = $this->generateUniqueFileName().'.'.$file->guessExtension();
+                    $file->move(
+                        $this->getParameter('brochures_directory'),
+                        $fileName
+                    );
+
+                    $vehicle->setPhoto($fileName);
                     $vehicle->setUser($user);
                     $em->persist($vehicle);
                     $em->flush();
@@ -61,7 +70,7 @@ class AnnounceController extends AbstractController
                 ]);
             }
         }
-        return $this->render("announcement/partials/_vehicle.html.twig", array(
+        return $this->render("announce/partials/_vehicle.html.twig", array(
             'form'  => $form->createView(),
         ));
     }
@@ -100,8 +109,16 @@ class AnnounceController extends AbstractController
                 return $this->redirectToRoute("home");
             }
         }
-        return $this->render("announcement/partials/_announcement.html.twig", array(
+        return $this->render("announce/partials/_announcement.html.twig", array(
             'form'  => $form->createView(),
         ));
+    }
+
+    /**
+     * @return string
+     */
+    private function generateUniqueFileName()
+    {
+        return md5(uniqid());
     }
 }

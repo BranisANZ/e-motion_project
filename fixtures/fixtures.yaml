@@ -17,7 +17,7 @@ App\Entity\User:
 App\Entity\Vehicle:
   vehicle{1..500}:
     user: "@user<numberBetween(1,20)>"
-    photo: <imageUrl(400, 400, 'transport')>
+    photo: "image-not-found.png"
     type:  <randomElement(['voiture','scooter'])>
     brand: <randomElement(['Mazda','Kia','Renault', 'Opel', 'Tesla'])>
     model: <randomElement(['Clio','208','Class A', '508', 'A1'])>
@@ -30,7 +30,7 @@ App\Entity\Vehicle:
 
 App\Entity\Announce:
   announce{1..20}:
-    vehicle: "@vehicle<numberBetween(1,500)>"
+    vehicle: "@vehicle<current()>"
     user: "@user<numberBetween(1,20)>"
     address: <streetAddress()>
     price: <numberBetween( 0, 80)>
