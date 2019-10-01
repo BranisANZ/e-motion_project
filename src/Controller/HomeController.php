@@ -2,14 +2,17 @@
 
 namespace App\Controller;
 
-use App\Entity\Announce;
-use App\Form\SearchAnnounceType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\{
+    Request, Response
+};
 use Symfony\Component\Routing\Annotation\Route;
 
+use App\Entity\{
+    Announce, Vehicle
+};
+use App\Form\SearchAnnounceType;
 
 class HomeController extends AbstractController
 {
@@ -29,10 +32,16 @@ class HomeController extends AbstractController
   
         if($request->isXmlHttpRequest()) {
             if ($searchForm->handleRequest($request)->isValid()) {
+                $announce = $repoAnnounce->findForSearch($searchForm->getData());
 
                 return $this->json([
                     'html' => $this->render('home/partials/_announcement_list.html.twig', [
-                        "annonces"   => $repoAnnounce->findForSearch($searchForm->getData()),
+                        "annonces"   => [
+                            'scooter' => $searchForm->get('type')->getData() == Vehicle::SCOOTER ?
+                                $announce : null,
+                            'voiture' => $searchForm->get('type')->getData() == Vehicle::VOITURE ?
+                                $announce : null
+                        ]
                     ])
                 ]);
             }
@@ -40,7 +49,10 @@ class HomeController extends AbstractController
 
         return $this->render('home/index.html.twig', [
             "searchForm" => $searchForm->createView(),
-            "annonces"   => $repoAnnounce->findAll(),
+            "annonces"   => [
+                'scooter' => $repoAnnounce->findByVehicleType(Vehicle::SCOOTER),
+                'voiture' => $repoAnnounce->findByVehicleType(Vehicle::VOITURE)
+            ],
         ]);
     }
 

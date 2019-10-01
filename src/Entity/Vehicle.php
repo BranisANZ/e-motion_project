@@ -10,9 +10,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Vehicle
 {
+    const VOITURE = "voiture";
+    const SCOOTER = "scooter";
+
     public static $types = [
-        "voiture",
-        "scooter"
+        self::VOITURE,
+        self::SCOOTER
     ];
 
     /**
