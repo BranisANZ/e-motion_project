@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Location;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use App\Form\UserType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -72,23 +73,58 @@ class UserController extends AbstractController
     }
 
     /**
-     * @param Request $request
-     * @Route("/history/{id}", name="history", methods={"GET"})
+     * @Route("/history", name="history")
      */
-    public function history(User $user)
+    public function history()
     {
-        $repository = $this->getDoctrine()->getRepository(Location::class);
-        $locationPast = $repository->getLocationPast($user->getId());
-        $locationFutur = $repository->getLocationFutur($user->getId());
-        $locationDate = $repository->getLocationDate($user->getId());
+        $userConnected = $this->getUser();
+        if(!empty($userConnected)) {
+            $locationPast = $locationFutur = $locationDate = "";
+            $idUserConnected = $userConnected->getId();
+            $repository = $this->getDoctrine()->getRepository(Location::class);
+            $locationPast = $repository->getLocationPast($idUserConnected);
+            $locationFutur = $repository->getLocationFutur($idUserConnected);
+            $locationDate = $repository->getLocationDate($idUserConnected);
 
-        return $this->render('user/history.html.twig', [
-            'locationPast' => $locationPast,
-            'locationFutur' => $locationFutur,
-            'locationDate' => $locationDate
-        ]);
+            return $this->render('user/history.html.twig', [
+                'locationPast' => $locationPast,
+                'locationFutur' => $locationFutur,
+                'locationDate' => $locationDate,
+            ]);
+        }
+
+        return $this->redirectToRoute('user_login');
     }
 
+    /**
+     * @Route("/account", name="account")
+     */
+    public function account(Request $request){
+        $userConnected = $this->getUser();
+        if(!empty($userConnected)){
+            $idUser = $userConnected->getId();
+            $repository = $this->getDoctrine()->getRepository(User::class);
+            $infoUser = $repository->find($idUser);
+            $formUser = $this->createForm(UserType::class, $userConnected);
+            $formUser->handleRequest($request);
 
+            if ($formUser->isSubmitted() && $formUser->isValid()) {
 
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->flush();
+
+                return $this->render('user/account.html.twig', [
+                    'infoUser' => $infoUser,
+                    'formUser' => $formUser->createView(),
+                ]);
+            }
+
+            return $this->render('user/account.html.twig', [
+                'infoUser' => $infoUser,
+                'formUser' => $formUser->createView(),
+            ]);
+        }
+
+        return $this->redirectToRoute('user_login');
+    }
 }

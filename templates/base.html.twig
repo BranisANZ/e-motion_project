@@ -30,21 +30,24 @@
                   crossorigin="anonymous">
         {% endblock %}
     </head>
-    <body>
+    <body style="z-index: -1000;">
         <div class="r-wrapper">
             {% include("partials/header.html.twig") %}
             {% block body %}{% endblock %}
             {% block javascripts %}
-                <script src="/js/jquery.min.js"></script>
+                <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+                        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+                        crossorigin="anonymous"></script>
+                <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.1/jquery.validate.min.js"></script>
                 <script src="/js/plugins/appear/appear.js"></script>
                 <script src="/js/plugins/counter/jquery.easing.min.js"></script>
                 <script src="/js/plugins/counter/counter.min.js"></script>
                 <script src="/js/tether.min.js"></script>
-                <script src="/js/bootstrap.min.js"></script>
-                <script src="/js/plugins/owl/owl.carousel.min.js"></script>
+                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+                        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+                        crossorigin="anonymous"></script>
                 <script src="/js/plugins/lightcase/lightcase.js"></script>
                 <script src="/js/map.js"></script>
-                <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBK7lXLHQgaGdP3IvMPi1ej0B9JHUbcqB0&amp;callback=initMap"></script>
                 <script src="/js/custom.js"></script>
                 <script src="/js/emotion.js"></script>
             {% endblock %}

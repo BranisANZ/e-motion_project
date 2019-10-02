@@ -14,7 +14,6 @@
             </div>
         </div>
     </div>
-    <section>
         <div class="r-best-vehicles">
             <div class="container">
                 <div style="display: flex;justify-content: center">
@@ -40,33 +39,33 @@
                     {{ form_end(searchForm) }}
                 </div>
                 {% if annonces | length != 0 %}
-                <div class="row clearfix r-best-offer-list">
+                    <div class="row clearfix r-best-offer-list">
 
-                    {% for annonce in annonces %}
-                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                            <div class="r-best-offer-single">
-                                <div class="r-best-offer-in">
-                                    <div class="r-offer-img">
-                                        <a class="d-inline-block" href="index.html#"><img src="/images/best-01.jpg" class="img-fluid d-block m-auto" alt=""></a>
-                                    </div>
-                                    <div class="r-best-offer-content">
-                                        <a href="index.html#"><b>{{ annonce.vehicle.brand }}</b> {{ annonce.vehicle.model }}</a>
-                                        <p><b>{{ annonce.price }} €</b> par jour(s)</p>
-                                        <ul class="pl-0 mb-0">
-                                            <li><i class="fa fa-car"></i><span>{{ annonce.vehicle.year | date('Y')}}</span></li>
-                                            <li><i class="fa fa-cogs"></i><span>AUTO</span></li>
-                                            <li><i class="fa fa-beer"></i><span>ELECTRIQUE</span></li>
-                                            <li><i class="fa fa-road"></i><span>200 KM</span></li>
-                                        </ul>
-                                    </div>
-                                    <div class="r-offer-rewst-this">
-                                        <span class="text-uppercase">Louer cette voiture</span>
+                        {% for annonce in annonces %}
+                            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                <div class="r-best-offer-single">
+                                    <div class="r-best-offer-in">
+                                        <div class="r-offer-img">
+                                            <a class="d-inline-block" href="index.html#"><img src="/images/best-01.jpg" class="img-fluid d-block m-auto" alt=""></a>
+                                        </div>
+                                        <div class="r-best-offer-content">
+                                            <a href="index.html#"><b>{{ annonce.vehicle.brand }}</b> {{ annonce.vehicle.model }}</a>
+                                            <p><b>{{ annonce.price }} €</b> par jour(s)</p>
+                                            <ul class="pl-0 mb-0">
+                                                <li><i class="fa fa-car"></i><span>{{ annonce.vehicle.year | date('Y')}}</span></li>
+                                                <li><i class="fa fa-cogs"></i><span>AUTO</span></li>
+                                                <li><i class="fa fa-beer"></i><span>ELECTRIQUE</span></li>
+                                                <li><i class="fa fa-road"></i><span>200 KM</span></li>
+                                            </ul>
+                                        </div>
+                                        <div class="r-offer-rewst-this">
+                                            <span class="text-uppercase">Louer cette voiture</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    {% endfor %}
-                </div>
+                        {% endfor %}
+                    </div>
                 {% else %}
                     <p style="display: flex;justify-content: center">Aucun résultat pour votre recherche...</p>
                 {% endif %}
@@ -74,3 +73,4 @@
         </div>
     </section>
 {% endblock %}
+
