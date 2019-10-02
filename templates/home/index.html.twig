@@ -56,13 +56,6 @@
                                 Rechercher !
                             </button>
                         </div>
-                        <div class="form-group">
-                            <button type="button" class="btn btn-success center" data-toggle="modal" data-target="#e-swipeForm">
-                                E-SWIPE
-                            </button>
-                            {% include 'modal/_modal-form-e-swip.html.twig' %}
-
-                        </div>
                     </div>
                 </div>
             {{ form_end(searchForm) }}
@@ -83,18 +76,22 @@
                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <div class="r-about-info-content">
                             <div class="r-sec-head r-sec-head-left r-sec-head-line r-sec-head-w pt-0">
-                                <span>KNOW MORE ABOUT US</span>
-                                <h2>Who <b>Royal Cars</b> Are.</h2>
+                                <span>E-Swiping Solution</span>
+                                <h2><b>Qu'est ce que c'est ?</b></h2>
                             </div>
                             <p>
-                                We know the difference is in the details and that’s why our car rental services, in the tourism and business industry, stand out for their quality and good taste.
+                               Le E-swiping est une solution innovante visant a prioriser l'interet du vehicule, il permet :
                             </p>
                             <ul class="mb-0 pl-0">
-                                <li><i class="fa fa-check-circle"></i> We working since 1980 with 4.000 customers</li>
-                                <li><i class="fa fa-check-circle"></i> All brand & type cars in our garage</li>
-                                <li><i class="fa fa-check-circle"></i> 1.000+ picking locations around the world</li>
+                                <li><i class="fa fa-check-circle"></i> Une utilisation simplifier</li>
+                                <li><i class="fa fa-check-circle"></i> Une recherche optimiser</li>
                             </ul>
-                            <img src="/images/about-sign.png" class="img-fluid d-inline-block" alt="">
+                            <button type="button" class="form-control btn-primary"
+                                    data-toggle="modal" data-target="#e-swipeForm"
+                                    id="eSwipe" data-href="{{ path('eSwipe') }}">
+                                E-SWIPE
+                            </button>
+                            <div id="modal-ajax"></div>
                         </div>
                     </div>
                 </div>

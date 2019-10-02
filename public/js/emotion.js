@@ -16,7 +16,7 @@ function formDataChange(btnModifier) {
 }
 
 $(function() {
-    $("#searchAnnouncement").on("click", function() {
+    $('body').on("click", "#searchAnnouncement",  function() {
         var _form = $(this).closest('form');
         if(_form.valid()){
             $.ajax({
@@ -29,5 +29,16 @@ $(function() {
             });
         }
         return false;
+    }).on("click", '#eSwipe', function() {
+        var _this  = $(this);
+        var _div   = _this.next('#modal-ajax');
+
+        $.ajax({
+            type: 'POST',
+            url: _this.attr('data-href'),
+        }).then(function(response) {
+            _div.empty().append(response);
+            $('#e-swipeForm').modal('show');
+        });
     });
 });

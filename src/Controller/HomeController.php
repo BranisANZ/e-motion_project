@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Announce;
 use App\Form\SearchAnnounceType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,28 +20,13 @@ class HomeController extends AbstractController
      */
     public function index(Request $request)
     {
-        $em = $this->getDoctrine();
+        $em           = $this->getDoctrine()->getManager();
         $repoAnnounce = $em->getRepository(Announce::class);
-        $annonces = $repoAnnounce->findAll();
-        $searchForm = $this->createForm(SearchAnnounceType::class, null, [
+        $annonces     = $repoAnnounce->findAll();
+        $searchForm   = $this->createForm(SearchAnnounceType::class, null, [
             'action' => $this->generateUrl('home'),
             'method' => 'GET'
         ]);
-
-        $searchForm2 = $this->createForm(SearchAnnounceType::class);
-        $searchForm2->handleRequest($request);
-        if ($searchForm2->isSubmitted() && $searchForm2->isValid()){
-            $em = $this->getDoctrine();
-            $repoAnnounce = $em->getRepository(Announce::class);
-            $data = $searchForm->getData();
-            $annonces = $repoAnnounce->findForSearchSwipe($data);
-            dump($annonces);
-
-            return $this->render('announce/swipe.html.twig', [
-                "searchForm" => $searchForm2->createView(),
-                "annonces" => $annonces
-                ]);
-        }
   
         if($request->isXmlHttpRequest()) {
             if ($searchForm->handleRequest($request)->isValid()) {
@@ -56,8 +42,37 @@ class HomeController extends AbstractController
 
         return $this->render('home/index.html.twig', [
             "searchForm" => $searchForm->createView(),
-            'searchForm2' => $searchForm2->createView(),
             "annonces"   => $annonces,
         ]);
+    }
+
+    /**
+     * @Route("/eSwipe", name="eSwipe")
+     * @Template("modal/_modal-form-e-swip.html.twig")
+     * @param Request $request
+     * @return Response
+     */
+    public function eSwipe(Request $request) {
+        $em           = $this->getDoctrine()->getManager();
+        $repoAnnounce = $em->getRepository(Announce::class);
+        $searchForm  = $this->createForm(SearchAnnounceType::class, null, [
+            'action' => $this->generateUrl('eSwipe'),
+            'method' => 'POST'
+        ]);
+        $searchForm->handleRequest($request);
+
+        if ($searchForm->isSubmitted() && $searchForm->isValid()){
+            $data     = $searchForm->getData();
+            $annonces = $repoAnnounce->findForSearchSwipe($data);
+
+            return $this->render('announce/swipe.html.twig', [
+                "searchForm" => $searchForm->createView(),
+                "annonces"   => $annonces
+            ]);
+        }
+
+        $searchForm = $searchForm->createView();
+
+        return compact('searchForm');
     }
 }
