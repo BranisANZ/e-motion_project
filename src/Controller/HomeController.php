@@ -9,9 +9,7 @@ use Symfony\Component\HttpFoundation\{
 };
 use Symfony\Component\Routing\Annotation\Route;
 
-use App\Entity\{
-    Announce, Vehicle
-};
+use App\Entity\{Announce, Location, User, Vehicle};
 use App\Form\SearchAnnounceType;
 
 class HomeController extends AbstractController
@@ -25,6 +23,8 @@ class HomeController extends AbstractController
     {
         $em           = $this->getDoctrine()->getManager();
         $repoAnnounce = $em->getRepository(Announce::class);
+        $repoLocation = $em->getRepository(Location::class);
+        $repoUser     = $em->getRepository(User::class);
         $searchForm   = $this->createForm(SearchAnnounceType::class, null, [
             'action' => $this->generateUrl('home'),
             'method' => 'GET'
@@ -41,6 +41,11 @@ class HomeController extends AbstractController
                                 $announce : null,
                             'voiture' => $searchForm->get('type')->getData() == Vehicle::VOITURE ?
                                 $announce : null
+                        ],
+                        "data" => [
+                            'nbUser'     => $repoUser->findAll(),
+                            'nbAnnounce' => $repoAnnounce->findAll(),
+                            'nbLocation' => $repoLocation->findAll(),
                         ]
                     ])
                 ]);
@@ -53,6 +58,11 @@ class HomeController extends AbstractController
                 'scooter' => $repoAnnounce->findByVehicleType(Vehicle::SCOOTER),
                 'voiture' => $repoAnnounce->findByVehicleType(Vehicle::VOITURE)
             ],
+            "data" => [
+                'nbUser'     => $repoUser->findAll(),
+                'nbAnnounce' => $repoAnnounce->findAll(),
+                'nbLocation' => $repoLocation->findAll(),
+            ]
         ]);
     }
 
