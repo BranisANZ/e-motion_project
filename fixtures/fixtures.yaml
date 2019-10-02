@@ -18,6 +18,7 @@ App\Entity\Vehicle:
   vehicle{1..500}:
     user: "@user<numberBetween(1,20)>"
     photo: <imageUrl(400, 400, 'transport')>
+    type:  <randomElement(['voiture','scooter'])>
     brand: <randomElement(['Mazda','Kia','Renault', 'Opel', 'Tesla'])>
     model: <randomElement(['Clio','208','Class A', '508', 'A1'])>
     km: <numberBetween( 0, 200000)>

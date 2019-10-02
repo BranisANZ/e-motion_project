@@ -1,7 +1,5 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Historique{% endblock %}
-
 {% block body %}
     <section id="r-login-register">
         <div class="r-login-register">
@@ -15,12 +13,12 @@
                 </div>
             </div>
             {% if locationFutur|length != 0 %}
-                <table class="table">
+                <table class="table table-responsive">
                     <caption>Location en attente</caption>
                     <thead class="thead-dark">
                     <tr>
                         <th>Marque</th>
-                        <th>Imatriculation</th>
+                        <th>Immatriculation</th>
                         <th>Adresse</th>
                         <th>Ville</th>
                         <th>Date de début</th>
@@ -41,16 +39,16 @@
                     </tbody>
                 </table>
             {% else %}
-                <p>Aucune location en attente</p>
+                <p>Aucune location en attente !</p>
             {% endif %}
 
             {% if locationDate|length != 0 %}
-            <table class="table">
+            <table class="table table-responsive">
                 <caption>Location en cours</caption>
                 <thead class="thead-dark">
                 <tr>
                     <th>Marque</th>
-                    <th>Imatriculation</th>
+                    <th>Immatriculation</th>
                     <th>Adresse</th>
                     <th>Ville</th>
                     <th>Date de début</th>
@@ -71,20 +69,21 @@
                 </tbody>
             </table>
             {% else %}
-                <p>Aucune location en cours</p>
+                <p>Aucune location en cours !</p>
             {% endif %}
 
             {% if locationPast|length != 0 %}
-            <table class="table">
+            <table class="table d-sm-table">
                 <caption>Dernière location</caption>
                 <thead class="thead-dark">
                 <tr>
                     <th>Marque</th>
-                    <th>Imatriculation</th>
+                    <th>Immatriculation</th>
                     <th>Adresse</th>
                     <th>Ville</th>
                     <th>Date de début</th>
                     <th>Date de fin</th>
+                    <th>Prix</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -96,12 +95,13 @@
                         <td>{{ past.city }}</td>
                         <td>{{ past.startDate | date('j/m/Y') }}</td>
                         <td>{{ past.endDate | date('j/m/Y') }}</td>
+                        <td>{{ past.price*past.dateDiff }} €</td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
             {% else %}
-                <p>Aucune location passé</p>
+                <p>Aucune location passé !</p>
             {% endif %}
         </div>
     </section>
