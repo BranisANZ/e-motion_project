@@ -3,7 +3,10 @@
 namespace App\Controller;
 
 use App\Form\searchAnnounceType;
+use Doctrine\DBAL\Types\DateTimeType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Stripe\Checkout\Session;
+use Stripe\Stripe;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{
     RedirectResponse, Request, Response
@@ -14,9 +17,7 @@ use Symfony\Component\Security\Core\Security;
 use App\Entity\{
     Announce, Vehicle
 };
-use App\Form\{
-    AnnouncementType, RentalType
-};
+use App\Form\{AnnouncementType, DateLocationType, RentalType};
 /**
  * @Route("/annonce")
  */
@@ -40,6 +41,52 @@ class AnnounceController extends AbstractController
             "searchForm" => $searchForm->createView(),
             "annonces" => $annonces,
 
+        ]);
+    }
+
+    /**
+     * @Route("/detail/{id}", name="detail")
+     */
+    public function detailAction(Request $request,Announce $announce){
+
+        dump($announce);
+
+        $form = $this->createForm(DateLocationType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            dump($form->getData());
+            $date = $form->getData();
+            $hours = $this->diffHours($date['stopDateTime'],$date['startDateTime']);
+            $priceTotal = round(($announce->getPrice() /24) * $hours,2);
+            $priceTotal = $this->eurToCents($priceTotal);
+
+            dump($priceTotal);
+            $stripe = new Stripe();
+            $stripe::setApiKey('sk_test_jWWKdFyljvdnfJbjevs74kQH000tfdnAdA');
+
+            $session = Session::create([
+                'payment_method_types' => ['card'],
+                'line_items' => [[
+                    'name' => 'T-shirt',
+                    'description' => 'Comfortable cotton t-shirt',
+                    'images' => ['https://example.com/t-shirt.png'],
+                    'amount' => $priceTotal,
+                    'currency' => 'eur',
+                    'quantity' => 1,
+                ]],
+                'success_url' => 'https://example.com/success',
+                'cancel_url' => 'https://example.com/cancel',
+            ]);
+            dump($session['id']);
+            return $this->render('payment/index.html.twig', [
+                'controller_name' => 'PaymentController',
+                'sessionId' => $session['id']
+            ]);
+        }
+        return $this->render('announce/detail.html.twig', [
+            "annonce" => $announce,
+            "form" => $form->createView()
         ]);
     }
 
@@ -113,5 +160,17 @@ class AnnounceController extends AbstractController
         return $this->render("announcement/partials/_announcement.html.twig", array(
             'form'  => $form->createView(),
         ));
+    }
+
+
+    private function diffHours(\DateTime $dt2, \DateTime $dt1){
+        $diff =  $dt2->diff($dt1);
+        $hours = $diff->h;
+        $hours = $hours + ($diff->days*24);
+        return $hours;
+    }
+
+    private function eurToCents($price){
+        return $price * 100;
     }
 }
