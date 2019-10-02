@@ -45,7 +45,7 @@ class AnnounceController extends AbstractController
     }
 
     /**
-     * @Route("/detail/{id}", name="detail")
+     * @Route("/detail/{id}", name="detail_announce")
      */
     public function detailAction(Request $request,Announce $announce){
 
