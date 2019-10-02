@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Location;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use App\Form\UserType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -98,18 +99,29 @@ class UserController extends AbstractController
     /**
      * @Route("/account", name="account")
      */
-    public function account(Request $request){
+    public function account(Request $request, UserPasswordEncoderInterface $passwordEncoder){
         $userConnected = $this->getUser();
         if(!empty($userConnected)){
             $idUser = $userConnected->getId();
             $repository = $this->getDoctrine()->getRepository(User::class);
             $infoUser = $repository->find($idUser);
-            $formUser = $this->createForm(RegistrationFormType::class, $user = new User());
+            $formUser = $this->createForm(UserType::class, $userConnected);
             $formUser->handleRequest($request);
+
+            if ($formUser->isSubmitted() && $formUser->isValid()) {
+
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->flush();
+
+                return $this->render('user/account.html.twig', [
+                    'infoUser' => $infoUser,
+                    'formUser' => $formUser->createView(),
+                ]);
+            }
 
             return $this->render('user/account.html.twig', [
                 'infoUser' => $infoUser,
-                'formUser' => $formUser
+                'formUser' => $formUser->createView(),
             ]);
         }
 
