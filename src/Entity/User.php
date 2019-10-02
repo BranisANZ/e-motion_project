@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -27,17 +29,17 @@ class User implements UserInterface
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Announce", mappedBy="user", orphanRemoval=true)
      */
-    private $announce;
+    private $announces;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="user")
      */
-    private $comment;
+    private $comments;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Location", mappedBy="user")
      */
-    private $location;
+    private $locations;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -60,7 +62,7 @@ class User implements UserInterface
     private $address;
 
     /**
-     * @ORM\Column(type="string", length=10, nullable=true)
+     * @ORM\Column(type="string", length=5, nullable=true)
      */
     private $zipcode;
 
@@ -114,6 +116,10 @@ class User implements UserInterface
     public function __construct()
     {
         $this->setSignUpDate(new \DateTime("NOW"));
+        $this->vehicles = new ArrayCollection();
+        $this->announces = new ArrayCollection();
+        $this->comments = new ArrayCollection();
+        $this->locations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -328,9 +334,9 @@ class User implements UserInterface
 
 
     /**
-     * @return Collection|Vehicle[]
+     * @return Collection
      */
-    public function getVehicles(): ?Vehicle
+    public function getVehicles(): Collection
     {
         return $this->vehicles;
     }
@@ -361,15 +367,15 @@ class User implements UserInterface
     /**
      * @return Collection|Announce[]
      */
-    public function getAnnounces(): ?Announce
+    public function getAnnounces(): Collection
     {
-        return $this->announce;
+        return $this->announces;
     }
 
     public function addAnnounce(Announce $announce): self
     {
-        if (!$this->announce->contains($announce)) {
-            $this->announce[] = $announce;
+        if (!$this->announces->contains($announce)) {
+            $this->announces[] = $announce;
             $announce->setUser($this);
         }
 
@@ -392,15 +398,15 @@ class User implements UserInterface
     /**
      * @return Collection|Comment[]
      */
-    public function getComment(): ?Comment
+    public function getComments(): Collection
     {
-        return $this->comment;
+        return $this->comments;
     }
 
     public function addComment(Comment $comment): self
     {
-        if (!$this->comment->contains($comment)) {
-            $this->comment[] = $comment;
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
             $comment->setUser($this);
         }
 
@@ -409,8 +415,8 @@ class User implements UserInterface
 
     public function removeComment(Comment $comment): self
     {
-        if ($this->comment->contains($comment)) {
-            $this->comment->removeElement($comment);
+        if ($this->comments->contains($comment)) {
+            $this->comments->removeElement($comment);
             // set the owning side to null (unless already changed)
             if ($comment->getUser() === $this) {
                 $comment->setUser(null);
@@ -423,15 +429,15 @@ class User implements UserInterface
     /**
      * @return Collection|Location[]
      */
-    public function getLocations(): ?Location
+    public function getLocations(): Collection
     {
-        return $this->location;
+        return $this->locations;
     }
 
     public function addLocation(Location $location): self
     {
-        if (!$this->location->contains($location)) {
-            $this->location[] = $location;
+        if (!$this->locations->contains($location)) {
+            $this->locations[] = $location;
             $location->setUser($this);
         }
 
@@ -440,8 +446,8 @@ class User implements UserInterface
 
     public function removeLocation(Location $location): self
     {
-        if ($this->location->contains($location)) {
-            $this->location->removeElement($location);
+        if ($this->locations->contains($location)) {
+            $this->locations->removeElement($location);
             // set the owning side to null (unless already changed)
             if ($location->getUser() === $this) {
                 $location->setUser(null);
@@ -467,5 +473,7 @@ class User implements UserInterface
         $this->loyaltyPoints = $loyaltyPoints;
     }
 
-
+    public function __toString() {
+        return $this->id ." - ". $this->lastname . " ". $this->firstname;
+    }
 }

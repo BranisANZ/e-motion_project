@@ -4,15 +4,31 @@ App\Entity\User:
     lastname: <lastName()>
     birthdayDate: <dateTimeBetween('-70 years', '-18 years')>
     address: <streetAddress()>
-    zipcode: <postcode()>
+    zipcode: <numberBetween(10000, 90000)>
     city: <city()>
     signUpDate: <dateTimeBetween('-17 years', '-1 years')>
     licenseDriving:
-    photo: <imageUrl(400, 400, 'cats')>
+    photo: "image-not-found.png"
     email: <email()>
     phone: <phoneNumber()>
     loyaltyPoints: <numberBetween(0, 700)>
-    password: user
+    password: "<passwordGenerator(user)>"
+    roles: "[ROLE_USER]"
+  admin:
+    firstname: <firstName()>
+    lastname: <lastName()>
+    birthdayDate: <dateTimeBetween('-70 years', '-18 years')>
+    address: <streetAddress()>
+    zipcode: <numberBetween(10000, 90000)>
+    city: <city()>
+    signUpDate: <dateTimeBetween('-17 years', '-1 years')>
+    licenseDriving:
+    photo: "image-not-found.png"
+    email: "admin@admin.fr"
+    phone: <phoneNumber()>
+    loyaltyPoints: <numberBetween(0, 700)>
+    password: "<passwordGenerator(admin)>"
+    roles: "[ROLE_ADMIN]"
 
 App\Entity\Vehicle:
   vehicle{1..500}:

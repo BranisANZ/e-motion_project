@@ -73,7 +73,7 @@ class Vehicle
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Assert\Choice({3, 5 , 7}, message="Cenombre de porte est impossible")
+     * @Assert\Choice({3, 5 , 7}, message="Ce nombre de porte est impossible")
      */
     private $door;
 
@@ -86,6 +86,12 @@ class Vehicle
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="vehicles")
      */
     private $user;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Announce", cascade={"persist", "remove"})
+     */
+    private $announce;
+
 
     public function getId(): ?int
     {
@@ -238,8 +244,7 @@ class Vehicle
         return $this;
     }
 
-
-
-
-
+    public function __toString() {
+        return $this->matriculation . " - ". $this->brand . " " . $this->model;
+    }
 }
