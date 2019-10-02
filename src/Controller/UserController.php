@@ -99,7 +99,7 @@ class UserController extends AbstractController
     /**
      * @Route("/account", name="account")
      */
-    public function account(Request $request, UserPasswordEncoderInterface $passwordEncoder){
+    public function account(Request $request){
         $userConnected = $this->getUser();
         if(!empty($userConnected)){
             $idUser = $userConnected->getId();
