@@ -12,11 +12,16 @@ easy_admin:
         number: '%.2f'
     design:
         menu:
-            - { entity: 'Announce', label: 'Annonce' }
-            - { entity: 'User', label: 'Utilisateur', css_class: 'menu--user' }
+            - label: 'Utilisateurs'
+              icon: 'users'
+              entity: 'User'
+            - label: 'Annonces'
+              icon: 'tag'
+              entity: 'Announce'
     entities:
         Announce:
             class: App\Entity\Announce
+            label: 'Annonces'
             form:
                 fields:
                     - { property: 'address', label: 'Adresse' }
@@ -28,8 +33,19 @@ easy_admin:
                     - { property: 'user', label: 'Auteur' }
                     - { property: 'comments', label: 'Commentaires' }
                     - { property: 'locations', label: 'Locations' }
+            list:
+                fields:
+                    - { property: 'id', label: '#' }
+                    - { property: 'address', label: 'Adresse' }
+                    - { property: 'city', label: 'Ville' }
+                    - { property: 'zipcode', label: 'Code Postal' }
+                    - { property: 'price', label: 'Prix' }
+                    - { property: 'description', label: 'Description' }
+                    - { property: 'user', label: 'Auteur' }
+                    - { property: 'enable', label: 'Disponible' }
         User:
             class: App\Entity\User
+            label: 'Utilisateurs'
             form:
                 fields:
                     - { property: 'lastname', label: 'Nom' }
@@ -48,10 +64,12 @@ easy_admin:
                     - { property: 'locations', label: 'Locations' }
             list:
                 fields:
-                    - firstname
-                    - lastname
-                    - email
-                    - address
-                    - zipcode
-                    - phone
-                    - loyaltyPoints
+                    - { property: 'id', label: '#' }
+                    - { property: 'lastname', label: 'Nom' }
+                    - { property: 'firstname', label: 'Prenom' }
+                    - { property: 'email', label: 'Adresse mail' }
+                    - { property: 'address', label: 'Adresse postal' }
+                    - { property: 'city', label: 'Ville' }
+                    - { property: 'zipcode', label: 'Code Postal' }
+                    - { property: 'phone', label: 'Numero de telephone' }
+                    - { property: 'loyaltyPoints', label: 'Points de fidelité' }

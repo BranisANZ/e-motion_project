@@ -2,8 +2,7 @@
 
 namespace App\Controller;
 
-use App\Form\searchAnnounceType;
-use Doctrine\DBAL\Types\DateTimeType;
+use App\Form\SearchAnnounceType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
@@ -31,7 +30,7 @@ class AnnounceController extends AbstractController
         $em = $this->getDoctrine();
         $repoAnnounce = $em->getRepository(Announce::class);
         $annonces = $repoAnnounce->findAll();
-        $searchForm = $this->createForm(searchAnnounceType::class);
+        $searchForm = $this->createForm(SearchAnnounceType::class);
         $searchForm->handleRequest($request);
         if ($searchForm->isSubmitted() && $searchForm->isValid()){
             $data = $searchForm->getData();

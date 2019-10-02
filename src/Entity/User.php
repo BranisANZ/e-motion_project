@@ -474,6 +474,6 @@ class User implements UserInterface
     }
 
     public function __toString() {
-        return $this->id ." - ". $this->lastname . " ". $this->firstname;
+        return $this->lastname . " ". $this->firstname;
     }
 }
