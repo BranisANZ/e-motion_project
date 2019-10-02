@@ -1,0 +1,57 @@
+easy_admin:
+    site_name: 'E-motion Admin'
+    list:
+        item_permission: 'ROLE_ADMIN'
+    user:
+        display_name: true
+        display_avatar: false
+    formats:
+        date:     'd/m/Y'
+        time:     'H:i'
+        datetime: 'd/m/Y H:i:s'
+        number: '%.2f'
+    design:
+        menu:
+            - { entity: 'Announce', label: 'Annonce' }
+            - { entity: 'User', label: 'Utilisateur', css_class: 'menu--user' }
+    entities:
+        Announce:
+            class: App\Entity\Announce
+            form:
+                fields:
+                    - { property: 'address', label: 'Adresse' }
+                    - { property: 'city', label: 'Ville' }
+                    - { property: 'zipcode', label: 'Code Postal' }
+                    - { property: 'price', label: 'Prix' }
+                    - { property: 'description', label: 'Description' }
+                    - { property: 'enable', label: 'Disponible' }
+                    - { property: 'user', label: 'Auteur' }
+                    - { property: 'comments', label: 'Commentaires' }
+                    - { property: 'locations', label: 'Locations' }
+        User:
+            class: App\Entity\User
+            form:
+                fields:
+                    - { property: 'lastname', label: 'Nom' }
+                    - { property: 'firstname', label: 'Prenom' }
+                    - { property: 'birthdayDate', label: 'Anniversaire' }
+                    - { property: 'email', label: 'Adresse mail' }
+                    - { property: 'password', label: 'Mot de passe' }
+                    - { property: 'address', label: 'Adresse postal' }
+                    - { property: 'city', label: 'Ville' }
+                    - { property: 'zipcode', label: 'Code Postal' }
+                    - { property: 'phone', label: 'Numero de telephone' }
+                    - { property: 'loyaltyPoints', label: 'Points de fidelité' }
+                    - { property: 'vehicles', label: 'Vehicules' }
+                    - { property: 'announces', label: 'Annonces' }
+                    - { property: 'comments', label: 'Commentaires' }
+                    - { property: 'locations', label: 'Locations' }
+            list:
+                fields:
+                    - firstname
+                    - lastname
+                    - email
+                    - address
+                    - zipcode
+                    - phone
+                    - loyaltyPoints

@@ -10,9 +10,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Vehicle
 {
+    const VOITURE = "voiture";
+    const SCOOTER = "scooter";
+
     public static $types = [
-        "Voiture",
-        "Scooter"
+        self::VOITURE,
+        self::SCOOTER
     ];
 
     /**
@@ -54,9 +57,9 @@ class Vehicle
     private $type;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=false)
      */
-    private $photo;
+    private $photo = "image-not-found.png";
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -70,7 +73,7 @@ class Vehicle
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Assert\Choice({3, 5 , 7}, message="Cenombre de porte est impossible")
+     * @Assert\Choice({3, 5 , 7}, message="Ce nombre de porte est impossible")
      */
     private $door;
 
@@ -83,6 +86,12 @@ class Vehicle
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="vehicles")
      */
     private $user;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Announce", cascade={"persist", "remove"})
+     */
+    private $announce;
+
 
     public function getId(): ?int
     {
@@ -235,8 +244,7 @@ class Vehicle
         return $this;
     }
 
-
-
-
-
+    public function __toString() {
+        return $this->matriculation . " - ". $this->brand . " " . $this->model;
+    }
 }

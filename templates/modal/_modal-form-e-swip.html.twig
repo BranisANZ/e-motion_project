@@ -1,5 +1,6 @@
 <div class="modal" id="e-swipeForm" tabindex="-1" role="dialog" aria-labelledby="e-swipeForm" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable" role="document">
+        {{ form_start(searchForm) }}
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalCenteredLabel">TROUVEZ LE VÉHICULE QUI VOUS CORRESPOND</h5>
@@ -7,7 +8,6 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            {{ form_start(searchForm) }}
             <div class="modal-body">
                 <div class="container">
                     <div class="row">
@@ -30,7 +30,7 @@
             <div class="modal-footer">
                 <button type="submit" class="btn btn-success">Rechercher !</button>
             </div>
-            {{ form_end(searchForm) }}
         </div>
+        {{ form_end(searchForm) }}
     </div>
 </div>

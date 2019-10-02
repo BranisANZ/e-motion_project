@@ -40,5 +40,17 @@ $(function() {
             _div.empty().append(response);
             $('#e-swipeForm').modal('show');
         });
+    }).on("click", '.description', function(e) {
+        e.preventDefault();
+        var _this     = $(this);
+        var _div      = $('#modal-ajax-desc');
+
+        $.ajax({
+            type: 'POST',
+            url: _this.attr('data-href'),
+        }).then(function(response) {
+            _div.empty().append(response);
+            $('#vehicleDescription').modal('show');
+        });
     });
 });

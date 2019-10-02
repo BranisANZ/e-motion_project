@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\LocationRepository")
@@ -25,6 +26,7 @@ class Location
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Announce", inversedBy="locations")
+     * @JoinColumn(name="announce_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $announce;
 
@@ -98,4 +100,7 @@ class Location
         return $this;
     }
 
+    public function __toString() {
+        return $this->startDate->format("d/m/Y") ." - ". $this->endDate->format("d/m/Y");
+    }
 }

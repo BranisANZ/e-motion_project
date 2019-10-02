@@ -2,14 +2,17 @@
 
 namespace App\Controller;
 
-use App\Entity\Announce;
-use App\Form\SearchAnnounceType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\{
+    Request, Response
+};
 use Symfony\Component\Routing\Annotation\Route;
 
+use App\Entity\{
+    Announce, Vehicle
+};
+use App\Form\SearchAnnounceType;
 
 class HomeController extends AbstractController
 {
@@ -22,7 +25,6 @@ class HomeController extends AbstractController
     {
         $em           = $this->getDoctrine()->getManager();
         $repoAnnounce = $em->getRepository(Announce::class);
-        $annonces     = $repoAnnounce->findAll();
         $searchForm   = $this->createForm(SearchAnnounceType::class, null, [
             'action' => $this->generateUrl('home'),
             'method' => 'GET'
@@ -30,11 +32,16 @@ class HomeController extends AbstractController
   
         if($request->isXmlHttpRequest()) {
             if ($searchForm->handleRequest($request)->isValid()) {
-                $data = $searchForm->getData();
+                $announce = $repoAnnounce->findForSearch($searchForm->getData());
 
                 return $this->json([
                     'html' => $this->render('home/partials/_announcement_list.html.twig', [
-                        "annonces"   => $repoAnnounce->findForSearch($data),
+                        "annonces"   => [
+                            'scooter' => $searchForm->get('type')->getData() == Vehicle::SCOOTER ?
+                                $announce : null,
+                            'voiture' => $searchForm->get('type')->getData() == Vehicle::VOITURE ?
+                                $announce : null
+                        ]
                     ])
                 ]);
             }
@@ -42,7 +49,10 @@ class HomeController extends AbstractController
 
         return $this->render('home/index.html.twig', [
             "searchForm" => $searchForm->createView(),
-            "annonces"   => $annonces,
+            "annonces"   => [
+                'scooter' => $repoAnnounce->findByVehicleType(Vehicle::SCOOTER),
+                'voiture' => $repoAnnounce->findByVehicleType(Vehicle::VOITURE)
+            ],
         ]);
     }
 
@@ -53,26 +63,37 @@ class HomeController extends AbstractController
      * @return Response
      */
     public function eSwipe(Request $request) {
-        $em           = $this->getDoctrine()->getManager();
-        $repoAnnounce = $em->getRepository(Announce::class);
         $searchForm  = $this->createForm(SearchAnnounceType::class, null, [
             'action' => $this->generateUrl('eSwipe'),
             'method' => 'POST'
-        ]);
-        $searchForm->handleRequest($request);
+        ])->handleRequest($request);
 
-        if ($searchForm->isSubmitted() && $searchForm->isValid()){
-            $data     = $searchForm->getData();
-            $annonces = $repoAnnounce->findForSearchSwipe($data);
+        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+            $em           = $this->getDoctrine()->getManager();
 
             return $this->render('announce/swipe.html.twig', [
                 "searchForm" => $searchForm->createView(),
-                "annonces"   => $annonces
+                "annonces"   => $em->getRepository(Announce::class)
+                                   ->findForSearchSwipe($searchForm->getData())
             ]);
         }
 
         $searchForm = $searchForm->createView();
 
         return compact('searchForm');
+    }
+
+    /**
+     * @Route("/vehicle/description/{announceId}", name="vehicleDescription")
+     * @Template("modal/_modal-swipe.html.twig")
+     * @param int $announceId
+     * @param Request $request
+     * @return Response
+     */
+    public function vehicleDescription(int $announceId, Request $request) {
+        $em       = $this->getDoctrine()->getManager();
+        $announce = $em->getRepository(Announce::class)->find($announceId);
+
+        return compact('announce');
     }
 }

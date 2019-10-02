@@ -13611,8 +13611,6 @@ a:focus {
     appearance: none;
     -webkit-appearance: none;
     -ms-appearance: none;
-    border-radius: 0px;
-    border: none;
     background-image: url(../images/search-car-select-bg.png);
     background-repeat: no-repeat;
     background-position: 95%;
@@ -15332,4 +15330,3 @@ input, select {
     padding-left: 10px;
     padding-right: 10px; } }
 
-/*# sourceMappingURL=main.css.map */

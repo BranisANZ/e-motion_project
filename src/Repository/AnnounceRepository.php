@@ -77,6 +77,20 @@ class AnnounceRepository extends ServiceEntityRepository
         return $search->getQuery()->getResult();
     }
 
+    /**
+     * @param $type
+     * @return Announce[] Returns an array of Announce objects
+     */
+    public function findByVehicleType($type)
+    {
+        return $this->createQueryBuilder('a')
+                    ->innerJoin('a.vehicle', 'v')
+                    ->andWhere('v.type = :type')
+                    ->setParameter('type', $type)
+                    ->orderBy('a.id', 'ASC')
+                    ->getQuery()->getResult();
+    }
+
 
     /*
     public function findOneBySomeField($value): ?Announce

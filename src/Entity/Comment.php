@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CommentRepository")
@@ -29,6 +30,7 @@ class Comment
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Announce", inversedBy="comments")
+     * @JoinColumn(name="announce_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $announce;
 
@@ -89,5 +91,9 @@ class Comment
         $this->content = $content;
 
         return $this;
+    }
+
+    public function __toString() {
+        return $this->content;
     }
 }
