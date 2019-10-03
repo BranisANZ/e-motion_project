@@ -47,9 +47,6 @@ class AnnounceController extends AbstractController
      * @Route("/detail/{id}", name="detail_announce")
      */
     public function detailAction(Request $request,Announce $announce){
-
-        dump($announce);
-
         $form = $this->createForm(DateLocationType::class);
         $form->handleRequest($request);
 
@@ -60,7 +57,6 @@ class AnnounceController extends AbstractController
             $priceTotal = round(($announce->getPrice() /24) * $hours,2);
             $priceTotal = $this->eurToCents($priceTotal);
 
-            dump($priceTotal);
             $stripe = new Stripe();
             $stripe::setApiKey('sk_test_jWWKdFyljvdnfJbjevs74kQH000tfdnAdA');
 
@@ -77,7 +73,7 @@ class AnnounceController extends AbstractController
                 'success_url' => 'https://example.com/success',
                 'cancel_url' => 'https://example.com/cancel',
             ]);
-            dump($session['id']);
+
             return $this->render('payment/index.html.twig', [
                 'controller_name' => 'PaymentController',
                 'sessionId' => $session['id']
@@ -117,7 +113,7 @@ class AnnounceController extends AbstractController
                 ]);
             }
         }
-        return $this->render("announcement/partials/_vehicle.html.twig", array(
+        return $this->render("announce/partials/_vehicle.html.twig", array(
             'form'  => $form->createView(),
         ));
     }
@@ -156,7 +152,7 @@ class AnnounceController extends AbstractController
                 return $this->redirectToRoute("home");
             }
         }
-        return $this->render("announcement/partials/_announcement.html.twig", array(
+        return $this->render("announce/partials/_announcement.html.twig", array(
             'form'  => $form->createView(),
         ));
     }
