@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Form\SearchAnnounceType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -87,74 +88,99 @@ class AnnounceController extends AbstractController
 
     /**
      * @IsGranted("IS_AUTHENTICATED_FULLY")
-     * @Route("/add/vehicle", name="vehicleAnnounce")
+     * @Route(
+     *     "/add/vehicle",
+     *     name="vehicleAnnounce"
+     * )
+     * @Template("announce/rental.html.twig")
      * @param Request $request
      * @return RedirectResponse|Response
      */
     public function addVehicleAction(Request $request)
     {
-        $form = $this->createForm(RentalType::class, $vehicle = new Vehicle(), [
-            'action' => $this->generateUrl('vehicleAnnounce'),
+        $form = $this->createForm(RentalType::class, new Vehicle(), [
+            'action' => $this->generateUrl('announcement'),
             'method' => 'POST'
-        ]);
-        $form->handleRequest($request);
+        ])->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            if ($this->isCsrfTokenValid(
-                'rental_item',
-                $request->request->get('rental')['_token']
-            )) {
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($vehicle);
-                $em->flush();
+        $form = $form->createView();
 
-                return $this->redirectToRoute('announcement', [
-                    'vehicleId' => $vehicle->getId(),
-                ]);
-            }
-        }
-        return $this->render("announce/partials/_vehicle.html.twig", array(
-            'form'  => $form->createView(),
-        ));
+        return compact('form');
     }
 
     /**
      * @IsGranted("IS_AUTHENTICATED_FULLY")
-     * @Route("/add/announcement/{vehicleId}", name="announcement")
-     * @param Security $security
+     * @Route(
+     *     "/add/announcement",
+     *     name="announcement")
+     * @Template("announce/partials/_announcement.html.twig")
      * @param Request $request
-     * @param int $vehicleId
+     * @param Security $security
      * @return RedirectResponse|Response
+     * @throws \Exception
      */
-    public function addAnnouncementAction(Security $security, Request $request, int $vehicleId)
+    public function addAnnouncementAction(Request $request, Security $security)
     {
-        $form = $this->createForm(AnnouncementType::class, $announcement = new Announce(), [
-            'action' => $this->generateUrl('announcement', [
-                'vehicleId' => $vehicleId,
-            ]),
-            'method' => 'POST'
-        ]);
-        $form->handleRequest($request);
+        $form = $this->createForm(AnnouncementType::class, null, [
+            'action' => $this->generateUrl('announcement'),
+            'method' => 'POST',
+            'vehicle' => $request->request->get('rental') ? $request->request->get('rental') : null,
+        ])->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($this->isCsrfTokenValid(
-                'announcement_item',
-                $request->request->get('announcement')['_token']
-            )) {
-                $em = $this->getDoctrine()->getManager();
-                $repo = $em->getRepository(Vehicle::class);
+            $data = $form->getData();
 
-                $announcement->setVehicle($repo->find($vehicleId));
-                $announcement->setUser($security->getUser());
-                $em->persist($announcement);
+            if ($this->isCsrfTokenValid(
+                    'announcement_item',
+                    $request->request->get('announcement')['_token']
+                ) && $this->isCsrfTokenValid(
+                    'rental_item',
+                    $data['vehicle']['_token']
+                )) {
+                $em       = $this->getDoctrine()->getManager();
+                $announce = new Announce();
+
+                if (!$vehicle = $em->getRepository(Vehicle::class)->findOneBy([
+                    'matriculation' => $data['vehicle']['matriculation'],
+                    'user'          => $security->getUser(),
+                    'type'          => $data['vehicle']['type'],
+                ])) {
+                    $vehicle  = new Vehicle();
+                    $vehicle->setType($data['vehicle']['type'])
+                        ->setModel($data['vehicle']['model'])
+                        ->setBrand($data['vehicle']['brand'])
+                        ->setMatriculation($data['vehicle']['matriculation'])
+                        ->setKm($data['vehicle']['km'])
+                        ->setYear(new \DateTime($data['vehicle']['year']))
+                        ->setDoor(array_key_exists ('door', $data['vehicle']) ?
+                            $data['vehicle']['door'] : null
+                        )->setPlace(array_key_exists('place', $data['vehicle']) ?
+                            $data['vehicle']['door'] : null
+                        )->setAutonomy($data['vehicle']['autonomy'])
+                        ->setUser($security->getUser())
+                        ->setPhoto(array_key_exists('photo', $data['vehicle']) ?
+                            $data['vehicle']['photo'] : $vehicle->getPhoto()
+                        );
+                    $em->persist($vehicle);
+                }
+
+                $announce->setUser($security->getUser())
+                         ->setAddress($data['address'])
+                         ->setCity($data['city'])
+                         ->setDescription($data['description'])
+                         ->setEnable(false)
+                         ->setPrice($data['price'])
+                         ->setZipcode($data['zipcode'])
+                         ->setVehicle($vehicle);
+                $em->persist($announce);
                 $em->flush();
 
                 return $this->redirectToRoute("home");
             }
         }
-        return $this->render("announce/partials/_announcement.html.twig", array(
-            'form'  => $form->createView(),
-        ));
+       $form = $form->createView();
+
+        return compact('form');
     }
 
 

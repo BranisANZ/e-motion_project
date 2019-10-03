@@ -227,10 +227,13 @@ class Announce
 
     /**
      * @param mixed $zipcode
+     * @return Announce
      */
-    public function setZipcode($zipcode): void
+    public function setZipcode($zipcode): self
     {
         $this->zipcode = $zipcode;
+
+        return $this;
     }
 
     /**
@@ -243,10 +246,13 @@ class Announce
 
     /**
      * @param mixed $city
+     * @return Announce
      */
-    public function setCity($city): void
+    public function setCity($city): self
     {
         $this->city = $city;
+
+        return $this;
     }
 
     public function __toString() {

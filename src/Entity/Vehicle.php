@@ -220,10 +220,13 @@ class Vehicle
 
     /**
      * @param mixed $type
+     * @return Vehicle
      */
-    public function setType($type): void
+    public function setType($type): self
     {
         $this->type = $type;
+
+        return $this;
     }
 
     /**

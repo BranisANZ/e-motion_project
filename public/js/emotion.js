@@ -5,7 +5,7 @@ function formDataChange(btnModifier) {
     _data[btnModifier.attr('name')] = btnModifier.val();
 
     $.ajax({
-        url : _form.attr('action'),
+        url : btnModifier.attr('data-href'),
         type: _form.attr('method'),
         data : _data,
     }).then(function(html) {
@@ -52,5 +52,49 @@ $(function() {
             _div.empty().append(response);
             $('#vehicleDescription').modal('show');
         });
+    }).on("click", '#next', function(e) {
+        e.preventDefault();
+        var _this     = $(this);
+        var _formData = new FormData();
+        var _form     = _this.closest('form');
+
+        var x = _form.serializeArray();
+        $.each(x, function(i, field) {
+            _formData.append(field.name,  field.value);
+        });
+
+        if(_form.valid()){
+            $.ajax({
+                type: 'POST',
+                url: _form.attr('action'),
+                data: _formData,
+                contentType : false,
+                processData : false,
+            }).then(function(response) {
+                $('#announcement_body').empty().append(response);
+            });
+        }
+    }).on("click", '#submitData', function(e) {
+        e.preventDefault();
+        var _this     = $(this);
+        var _formData = new FormData();
+        var _form     = _this.closest('form');
+
+        var x = _form.serializeArray();
+        $.each(x, function(i, field) {
+            _formData.append(field.name,  field.value);
+        });
+
+        if(_form.valid()){
+            $.ajax({
+                type: 'POST',
+                url: _form.attr('action'),
+                data: _formData,
+                contentType : false,
+                processData : false,
+            }).then(function(response) {
+                $('#announcement_body').empty().append(response);
+            });
+        }
     });
 });

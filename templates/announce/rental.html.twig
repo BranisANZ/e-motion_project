@@ -14,7 +14,148 @@
             </div>
         </div>
     </div>
-    {% block announcement_body %}{% endblock %}
+    <div id="announcement_body">
+        <section id="r-login-register">
+            <div class="r-login-register">
+                <div class="r-login-register-in" style="display: flex;justify-content: center">
+                    <div class="col-md-8">
+                        <div class="r-auth-outer">
+                            <div class="r-auth-head">
+                                <h2><b>Créer une annonce</b></h2>
+                                <span>Ajouter mon vehicule</span>
+                            </div>
+                            <div class="r-auth-form">
+                                <div class="r-or-line">
+                                    <span>VEHICULE</span>
+                                </div>
+                                {{ form_start(form) }}
+                                {{ form_row(form._token) }}
+                                {{ form_errors(form) }}
+                                <div class="form-group">
+                                    {{ form_widget(form.type) }}
+                                    {% if form_errors(form.type) %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ form_errors(form.type) }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.brand) }}
+                                    {{ form_widget(form.brand) }}
+                                    {% if form_errors(form.brand) %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ form_errors(form.brand) }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.model) }}
+                                    {{ form_widget(form.model) }}
+                                    {% if form_errors(form.model) %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ form_errors(form.model) }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.matriculation) }}
+                                    {{ form_widget(form.matriculation) }}
+                                    {% if form_errors(form.matriculation) %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ form_errors(form.matriculation) }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.photo) }}
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroupFileAddon01">
+                                            <i class="fa fa-upload"></i>
+                                        </span>
+                                        </div>
+                                        <div class="custom-file">
+                                            {{ form_widget(form.photo) }}
+                                            <label class="custom-file-label" for="customFile">Selectionne une image</label>
+                                        </div>
+                                    </div>
+
+                                    {% if form_errors(form.photo) %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ form_errors(form.photo) }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.year) }}
+                                    {{ form_widget(form.year) }}
+                                    {% if form_errors(form.year) %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ form_errors(form.year) }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.autonomy) }}
+                                    <div class="input-group">
+                                        {{ form_widget(form.autonomy) }}
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Km</span>
+                                        </div>
+                                    </div>
+                                    {% if form_errors(form.autonomy) %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ form_errors(form.autonomy) }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.km) }}
+                                    <div class="input-group">
+                                        {{ form_widget(form.km) }}
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Km</span>
+                                        </div>
+                                    </div>
+                                    {% if form_errors(form.km) %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ form_errors(form.km) }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div id="div-ajax">
+                                    {% if form.door is defined and form.place is defined %}
+                                        <div class="form-group">
+                                            {{ form_label(form.door) }}
+                                            {{ form_widget(form.door) }}
+                                            {% if form_errors(form.door) %}
+                                                <div class="alert alert-danger" role="alert">
+                                                    {{ form_errors(form.door) }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group">
+                                            {{ form_label(form.place) }}
+                                            {{ form_widget(form.place) }}
+                                            {% if form_errors(form.place) %}
+                                                <div class="alert alert-danger" role="alert">
+                                                    {{ form_errors(form.place) }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group" style="display:flex;justify-content: center">
+                                    <button type="submit" class="btn btn-full" id="next" data-href="{{ path('vehicleAnnounce') }}">Suivant</button>
+                                </div>
+                                {{ form_end(form, {'render_rest': false}) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
     <section id="r-get-in-touch">
         <div class="r-get-in-touch">
             <div class="container">
@@ -40,4 +181,16 @@
             </div>
         </div>
     </section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="application/javascript">
+        $(function() {
+            formDataChange($("#{{ form.type.vars.id }}"));
+            $("#{{ form.type.vars.id }}").on('change', function () {
+                formDataChange($(this));
+            });
+        });
+    </script>
 {% endblock %}
