@@ -15,14 +15,24 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 
 use App\Entity\{
-    Announce, Vehicle
+    Announce, Vehicle, Location
 };
 use App\Form\{AnnouncementType, DateLocationType, RentalType};
+use Nzo\UrlEncryptorBundle\UrlEncryptor\UrlEncryptor;
+
+
 /**
  * @Route("/annonce")
  */
 class AnnounceController extends AbstractController
 {
+    private $encryptor;
+
+    public function __construct(UrlEncryptor $encryptor)
+    {
+        $this->encryptor = $encryptor;
+    }
+
     /**
      * @Route("/", name="index")
      */
@@ -46,17 +56,30 @@ class AnnounceController extends AbstractController
 
     /**
      * @Route("/detail/{id}", name="detail_announce")
+     * @param Request $request
+     * @param Security $security
+     * @param Announce $announce
+     * @return Response
+     * @throws \Stripe\Exception\ApiErrorException
      */
-    public function detailAction(Request $request,Announce $announce){
+    public function detailAction(Request $request, Security $security, Announce $announce){
         $form = $this->createForm(DateLocationType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            dump($form->getData());
-            $date = $form->getData();
-            $hours = $this->diffHours($date['stopDateTime'],$date['startDateTime']);
+            $date       = $form->getData();
+            $hours      = $this->diffHours($date['stopDateTime'],$date['startDateTime']);
             $priceTotal = round(($announce->getPrice() /24) * $hours,2);
             $priceTotal = $this->eurToCents($priceTotal);
+            $em         = $this->getDoctrine()->getManager();
+            $location   = new Location();
+            $location->setUser($security->getUser())
+                     ->setAnnounce($announce)
+                     ->setStartDate($date['startDateTime'])
+                     ->setEndDate($date['stopDateTime']);
+
+            $em->persist($location);
+            $em->flush();
 
             $stripe = new Stripe();
             $stripe::setApiKey('sk_test_jWWKdFyljvdnfJbjevs74kQH000tfdnAdA');
@@ -64,21 +87,26 @@ class AnnounceController extends AbstractController
             $session = Session::create([
                 'payment_method_types' => ['card'],
                 'line_items' => [[
-                    'name' => 'T-shirt',
-                    'description' => 'Comfortable cotton t-shirt',
-                    'images' => ['https://example.com/t-shirt.png'],
-                    'amount' => $priceTotal,
-                    'currency' => 'eur',
-                    'quantity' => 1,
+                    'name'        => $announce->getVehicle()->getBrand() . " " . $announce->getVehicle()->getModel(),
+                    'description' => $announce->getDescription(),
+                    'amount'      => $priceTotal,
+                    'currency'    => 'eur',
+                    'quantity'    => 1,
                 ]],
-                'success_url' => 'https://example.com/success',
+                'success_url' => 'http://127.0.0.1:8000'. $this->generateUrl('successPayment', [
+                    'locationId' => $this->encryptor->encrypt($location->getId())
+                ]),
                 'cancel_url' => 'https://example.com/cancel',
             ]);
 
-            return $this->render('payment/index.html.twig', [
-                'controller_name' => 'PaymentController',
-                'sessionId' => $session['id']
-            ]);
+            if ($this->isGranted('ROLE_ADMIN')) {
+                return $this->render('payment/index.html.twig', [
+                    'controller_name' => 'PaymentController',
+                    'sessionId' => $session['id']
+                ]);
+            } else {
+                return $this->redirectToRoute('user_login');
+            }
         }
         return $this->render('announce/detail.html.twig', [
             "annonce" => $announce,
@@ -100,7 +128,10 @@ class AnnounceController extends AbstractController
     {
         $form = $this->createForm(RentalType::class, new Vehicle(), [
             'action' => $this->generateUrl('announcement'),
-            'method' => 'POST'
+            'method' => 'POST',
+            'attr' => [
+                'id'     => 'rental'
+            ]
         ])->handleRequest($request);
 
         $form = $form->createView();

@@ -10,105 +10,130 @@
             </div>
             <div class="row mt-5">
                 <div class="col-sm-12 col-md-12 col-lg-12">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            {% if locationFutur|length != 0 %}
-                                <h5>Mes prochaines locations :</h5>
-                                <table class="table table-responsive mt-3">
-                                    <caption>Location future</caption>
-                                    <thead class="thead-dark">
-                                    <tr>
-                                        <th>Marque</th>
-                                        <th>Immatriculation</th>
-                                        <th>Adresse</th>
-                                        <th>Ville</th>
-                                        <th>Date de début</th>
-                                        <th>Date de fin</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for futur in locationFutur %}
-                                        <tr>
-                                            <td>{{ futur.brand }}</td>
-                                            <td>{{ futur.matriculation }}</td>
-                                            <td>{{ futur.address }}</td>
-                                            <td>{{ futur.city }}</td>
-                                            <td>{{ futur.startDate | date('j/m/Y') }}</td>
-                                            <td>{{ futur.endDate | date('j/m/Y') }}</td>
-                                        </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
-                            {% else %}
-                                <p>Aucune location en attente !</p>
-                            {% endif %}
-                        </li>
-                        <li class="list-group-item">
-                            {% if locationDate|length != 0 %}
-                                <h5>Mes locations :</h5>
-                                <table class="table table-responsive mt-3">
-                                    <caption>Location en cours</caption>
-                                    <thead class="thead-dark">
-                                    <tr>
-                                        <th>Marque</th>
-                                        <th>Immatriculation</th>
-                                        <th>Adresse</th>
-                                        <th>Ville</th>
-                                        <th>Date de début</th>
-                                        <th>Date de fin</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for date in locationDate %}
-                                        <tr>
-                                            <td>{{ date.brand }}</td>
-                                            <td>{{ date.matriculation }}</td>
-                                            <td>{{ date.address }}</td>
-                                            <td>{{ date.city }}</td>
-                                            <td>{{ date.startDate | date('j/m/Y') }}</td>
-                                            <td>{{ date.endDate | date('j/m/Y') }}</td>
-                                        </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
-                            {% else %}
-                                <p>Aucune location en cours !</p>
-                            {% endif %}
-                        </li>
-                        <li class="list-group-item">
-                            {% if locationPast|length != 0 %}
-                                <h5>Mes anciennes locations :</h5>
-                                <table class="table d-sm-table mt-3">
-                                    <thead class="thead-dark">
-                                    <tr>
-                                        <th>Marque</th>
-                                        <th>Immatriculation</th>
-                                        <th>Adresse</th>
-                                        <th>Ville</th>
-                                        <th>Date de début</th>
-                                        <th>Date de fin</th>
-                                        <th>Prix</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for past in locationPast %}
-                                        <tr>
-                                            <td>{{ past.brand }}</td>
-                                            <td>{{ past.matriculation }}</td>
-                                            <td>{{ past.address }}</td>
-                                            <td>{{ past.city }}</td>
-                                            <td>{{ past.startDate | date('j/m/Y') }}</td>
-                                            <td>{{ past.endDate | date('j/m/Y') }}</td>
-                                            <td>{{ past.price*past.dateDiff }} €</td>
-                                        </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
-                            {% else %}
-                                <p>Aucune location passé !</p>
-                            {% endif %}
-                        </li>
-                    </ul>
+                    <div class="accordion" id="accordionExample">
+                        <div class="card">
+                            <div class="card-header" id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <h5 class="mb-0">
+                                    Mes locations en cours
+                                </h5>
+                            </div>
+
+                            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                <div class="card-body">
+                                    {% if locationDate|length != 0 %}
+                                        <table class="table mt-3">
+                                            <thead class="thead-dark">
+                                            <tr>
+                                                <th>Voiture</th>
+                                                <th>Adresse</th>
+                                                <th>Ville</th>
+                                                <th>Date de début</th>
+                                                <th>Date de fin</th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for date in locationDate %}
+                                                <tr>
+                                                    <td>{{ date.brand }} {{ date.model }}</td>
+                                                    <td>{{ date.address }}</td>
+                                                    <td>{{ date.city }}</td>
+                                                    <td>{{ date.startDate | date('j/m/Y H:i') }}</td>
+                                                    <td>{{ date.endDate | date('j/m/Y H:i') }}</td>
+                                                    <td>
+                                                        <a class="btn btn-success" href="{{ path('user_endLocation', {'locationId': date.id | urlencrypt}) }}">Vehicule rendu</a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    {% else %}
+                                        <p>Aucune location en cours !</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" id="headingTwo" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                <h5 class="mb-0">
+                                    Mes locations à venir
+                                </h5>
+                            </div>
+                            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                                <div class="card-body">
+                                    {% if locationFutur|length != 0 %}
+                                        <table class="table mt-3">
+                                            <thead class="thead-dark">
+                                            <tr>
+                                                <th>Marque</th>
+                                                <th>Immatriculation</th>
+                                                <th>Adresse</th>
+                                                <th>Ville</th>
+                                                <th>Date de début</th>
+                                                <th>Date de fin</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for futur in locationFutur %}
+                                                <tr>
+                                                    <td>{{ futur.brand }}</td>
+                                                    <td>{{ futur.matriculation }}</td>
+                                                    <td>{{ futur.address }}</td>
+                                                    <td>{{ futur.city }}</td>
+                                                    <td>{{ futur.startDate | date('j/m/Y') }}</td>
+                                                    <td>{{ futur.endDate | date('j/m/Y') }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    {% else %}
+                                        <p>Aucune location en attente !</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" id="headingThree" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                <h5 class="mb-0">
+                                    Mes locations passées
+                                </h5>
+                            </div>
+                            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                                <div class="card-body">
+                                    {% if locationPast|length != 0 %}
+                                        <table class="table mt-3">
+                                            <thead class="thead-dark">
+                                            <tr>
+                                                <th>Marque</th>
+                                                <th>Immatriculation</th>
+                                                <th>Adresse</th>
+                                                <th>Ville</th>
+                                                <th>Date de début</th>
+                                                <th>Date de fin</th>
+                                                <th>Prix</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for past in locationPast %}
+                                                <tr {% if past.returned_at > past.endDate %}style="color:red"{% endif %}>
+                                                    <td>{{ past.brand }}</td>
+                                                    <td>{{ past.matriculation }}</td>
+                                                    <td>{{ past.address }}</td>
+                                                    <td>{{ past.city }}</td>
+                                                    <td>{{ past.startDate | date('j/m/Y') }}</td>
+                                                    <td>{{ past.endDate | date('j/m/Y') }}</td>
+                                                    <td>{{ past.price*past.dateDiff }} €</td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    {% else %}
+                                        <p>Aucune location passé !</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

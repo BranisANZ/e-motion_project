@@ -26,10 +26,10 @@ class LocationRepository extends ServiceEntityRepository
 
         $qb = $this->createQueryBuilder('l');
         $qb
-            ->select('l.startDate, l.endDate, a.city, a.address, a.price, v.brand, v.matriculation, DATE_DIFF(l.endDate, l.startDate) AS dateDiff')
+            ->select('l.startDate, l.endDate, a.city, a.address, a.price, v.brand, v.matriculation, DATE_DIFF(l.endDate, l.startDate) AS dateDiff, l.returned_at')
             ->innerJoin(Announce::class, 'a', Join::WITH, 'a.id = l.announce')
             ->innerJoin(Vehicle::class, 'v', Join::WITH, 'v.id = a.vehicle')
-            ->where('l.endDate < CURRENT_DATE()')
+            ->where('l.returned = true')
             ->andWhere('l.user = :idUser')
             ->setParameter('idUser', $idUser)
             ->orderBy('l.startDate', 'desc');
@@ -54,11 +54,12 @@ class LocationRepository extends ServiceEntityRepository
 
         $qb = $this->createQueryBuilder('l');
         $qb
-            ->select('l.startDate, l.endDate, a.city, a.address, a.price, v.brand, v.matriculation, DATE_DIFF(l.endDate, l.startDate) AS dateDiff')
+            ->select('l.id as id, l.startDate, l.endDate, a.city, a.address, a.price, v.brand, v.model, DATE_DIFF(l.endDate, l.startDate) AS dateDiff')
             ->innerJoin(Announce::class, 'a', Join::WITH, 'a.id = l.announce')
             ->innerJoin(Vehicle::class, 'v', Join::WITH, 'v.id = a.vehicle')
-            ->where('l.startDate < CURRENT_DATE()')
-            ->andWhere('l.endDate > CURRENT_DATE() AND l.user = :idUser')
+            ->where('CURRENT_DATE() > l.startDate')
+            ->andWhere('l.returned = false')
+            ->andWhere('l.user = :idUser')
             ->setParameter('idUser', $idUser)
             ->orderBy('l.startDate', 'desc');
         return $qb->getQuery()->getArrayResult();

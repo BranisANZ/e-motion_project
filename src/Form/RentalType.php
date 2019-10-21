@@ -48,10 +48,9 @@ class RentalType extends AbstractType
         ])->add('photo', FileType::class, [
             'label'       => 'Photo du véhicule :',
             'data_class'  => null,
-            'required'    => true,
+            'required'    => false,
             'attr'        => [
                 'id'      => 'customFile',
-                'class'   => 'custom-file-input'
             ],
             'constraints' => [
                 new NotBlank(),

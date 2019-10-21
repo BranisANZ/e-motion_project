@@ -1,5 +1,21 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        label.error {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            color: #a94442;
+            background-color: #f2dede;
+            border-color: #ebccd1;
+            width:100%;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
     <div class="r-header r-header-inner">
         <div class="r-header-inner-banner">
@@ -97,12 +113,7 @@
                                 </div>
                                 <div class="form-group">
                                     {{ form_label(form.autonomy) }}
-                                    <div class="input-group">
-                                        {{ form_widget(form.autonomy) }}
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">Km</span>
-                                        </div>
-                                    </div>
+                                    {{ form_widget(form.autonomy) }}
                                     {% if form_errors(form.autonomy) %}
                                         <div class="alert alert-danger" role="alert">
                                             {{ form_errors(form.autonomy) }}
@@ -111,12 +122,7 @@
                                 </div>
                                 <div class="form-group">
                                     {{ form_label(form.km) }}
-                                    <div class="input-group">
-                                        {{ form_widget(form.km) }}
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">Km</span>
-                                        </div>
-                                    </div>
+                                    {{ form_widget(form.km) }}
                                     {% if form_errors(form.km) %}
                                         <div class="alert alert-danger" role="alert">
                                             {{ form_errors(form.km) }}

@@ -7,6 +7,7 @@ services:
       - './000-default.conf:/etc/apache2/sites-available/000-default.conf:cached'
     depends_on:
       - database
+      - mailhog
   database:
     image: 'mariadb'
     environment:
@@ -20,3 +21,4 @@ services:
     image: 'mailhog/mailhog'
     ports:
       - '8025:8025'
+      - '1025:1025'

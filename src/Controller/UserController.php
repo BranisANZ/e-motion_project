@@ -6,6 +6,7 @@ use App\Entity\Location;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Form\UserType;
+use Nzo\UrlEncryptorBundle\Annotations\ParamDecryptor;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -126,5 +127,27 @@ class UserController extends AbstractController
         }
 
         return $this->redirectToRoute('user_login');
+    }
+
+    /**
+     * @Route("end/location/{locationId}", name="endLocation")
+     * @param $locationId
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @throws \Exception
+     * @ParamDecryptor(params={"locationId"})
+     */
+    public function endLocation($locationId) {
+        $em = $this->getDoctrine()->getManager();
+
+        if ($location = $em->getRepository(Location::class)
+                           ->find($locationId)
+        ) {
+            $location->setReturned(true)
+                     ->setReturnedAt(new \DateTime());
+            $em->persist($location);
+            $em->flush();
+        }
+
+        return $this->redirectToRoute('user_history');
     }
 }
