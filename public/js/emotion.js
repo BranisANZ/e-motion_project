@@ -40,6 +40,17 @@ $(function() {
             _div.empty().append(response);
             $('#e-swipeForm').modal('show');
         });
+    }).on("click", '.leave-comment', function() {
+        var _this  = $(this);
+        var _div   = _this.next('#modal-ajax');
+
+        $.ajax({
+            type: 'POST',
+            url: _this.attr('data-href'),
+        }).then(function(response) {
+            _div.empty().append(response);
+            $('#modal-leave-comment').modal('show');
+        });
     }).on("click", '.description', function(e) {
         e.preventDefault();
         var _this     = $(this);
@@ -98,3 +109,16 @@ $(function() {
         }
     });
 });
+
+changeRate(null, 3);
+
+function changeRate(element, rate=null){
+    if(rate == null){
+        let id = $(element).attr('for');
+        let rateAux = $('#'+id).val();
+        $('#rate').val(rateAux);
+    }else{
+        let rateAux = $("#rate").val();
+        $("#lblStar"+rateAux).click();
+    }
+}

@@ -54,11 +54,11 @@ class LocationRepository extends ServiceEntityRepository
 
         $qb = $this->createQueryBuilder('l');
         $qb
-            ->select('l.id as id, l.startDate, l.endDate, a.city, a.address, a.price, v.brand, v.model, DATE_DIFF(l.endDate, l.startDate) AS dateDiff')
+            ->select('l.id as id, l.startDate, l.endDate, a.city, a.address, a.price, v.brand, v.model, DATE_DIFF(l.endDate, l.startDate) AS dateDiff, l.returned')
             ->innerJoin(Announce::class, 'a', Join::WITH, 'a.id = l.announce')
             ->innerJoin(Vehicle::class, 'v', Join::WITH, 'v.id = a.vehicle')
-            ->where('CURRENT_DATE() > l.startDate')
-            ->andWhere('l.returned = false')
+            ->where('CURRENT_DATE() > l.startDate AND l.returned != true')
+            ->orWhere('CURRENT_DATE() BETWEEN l.startDate AND l.endDate AND l.returned = true')
             ->andWhere('l.user = :idUser')
             ->setParameter('idUser', $idUser)
             ->orderBy('l.startDate', 'desc');

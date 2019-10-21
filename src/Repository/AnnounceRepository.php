@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Announce;
+use App\Entity\Location;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * @method Announce|null find($id, $lockMode = null, $lockVersion = null)
@@ -25,6 +27,7 @@ class AnnounceRepository extends ServiceEntityRepository
     public function findForSearch($value)
     {
         $search = $this->createQueryBuilder('a')
+            ->where('a.enable = true')
             ->orderBy('a.id', 'ASC')
         ;
 
@@ -85,6 +88,7 @@ class AnnounceRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('a')
                     ->innerJoin('a.vehicle', 'v')
+                    ->where('a.enable = true')
                     ->andWhere('v.type = :type')
                     ->setParameter('type', $type)
                     ->orderBy('a.id', 'ASC')

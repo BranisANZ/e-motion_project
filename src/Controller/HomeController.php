@@ -74,7 +74,7 @@ class HomeController extends AbstractController
      */
     public function eSwipe(Request $request) {
         $searchForm  = $this->createForm(SearchAnnounceType::class, null, [
-            'action' => $this->generateUrl('eSwipe'),
+            'action' => $request->request->get('_route'),
             'method' => 'POST'
         ])->handleRequest($request);
 

@@ -2,11 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Location;
 use App\Entity\User;
+use App\Form\CommentType;
 use App\Form\RegistrationFormType;
 use App\Form\UserType;
 use Nzo\UrlEncryptorBundle\Annotations\ParamDecryptor;
+use Nzo\UrlEncryptorBundle\UrlEncryptor\UrlEncryptor;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,6 +23,13 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
  */
 class UserController extends AbstractController
 {
+    private $encryptor;
+
+    public function __construct(UrlEncryptor $encryptor)
+    {
+        $this->encryptor = $encryptor;
+    }
+
     /**
      * @Route("/register", name="register")
      * @param Request $request
@@ -130,24 +141,45 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("end/location/{locationId}", name="endLocation")
+     * @Route("/end/location/{locationId}", name="endLocation")
+     * @Template("modal/_modal_comment.html.twig")
+     * @param Request $request
      * @param $locationId
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @throws \Exception
      * @ParamDecryptor(params={"locationId"})
      */
-    public function endLocation($locationId) {
-        $em = $this->getDoctrine()->getManager();
+    public function endLocation(Request $request, $locationId) {
+        $commentForm  = $this->createForm(CommentType::class, null, [
+            'action' => $this->generateUrl('user_endLocation', [ 'locationId' => $this->encryptor->encrypt($locationId)]),
+            'method' => 'POST'
+        ])->handleRequest($request);
 
-        if ($location = $em->getRepository(Location::class)
-                           ->find($locationId)
-        ) {
-            $location->setReturned(true)
-                     ->setReturnedAt(new \DateTime());
-            $em->persist($location);
-            $em->flush();
+        if ($commentForm->isSubmitted() && $commentForm->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+
+            if ($location = $em->getRepository(Location::class)
+                               ->find($locationId)
+            ) {
+                if ($content = $commentForm->get('comment')->getData()) {
+                    $comment = new Comment();
+                    $comment->setAnnounce($location->getAnnounce())
+                            ->setUser($this->getUser())
+                            ->setRate($request->request->get('rate'))
+                            ->setContent($content);
+                    $em->persist($comment);
+                }
+                $location->setReturned(true)
+                         ->setReturnedAt(new \DateTime());
+                $em->persist($location);
+                $em->flush();
+            }
+
+            return $this->redirectToRoute('user_history');
         }
 
-        return $this->redirectToRoute('user_history');
+        $commentForm = $commentForm->createView();
+
+        return compact('commentForm');
     }
 }

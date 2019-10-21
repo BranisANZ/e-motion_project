@@ -67,10 +67,12 @@ class PaymentController extends AbstractController
 
             $mailer->send($message);
 
+            $location->getAnnounce()->setEnable(false);
+            $em->persist($location);
+            $em->flush();
+
             return $this->redirectToRoute('home');
         }
-        return $this->render('payment/index.html.twig', [
-            'controller_name' => 'PaymentController',
-        ]);
+        return $this->render('payment/index.html.twig');
     }
 }

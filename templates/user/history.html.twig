@@ -34,15 +34,36 @@
                                             </thead>
                                             <tbody>
                                             {% for date in locationDate %}
-                                                <tr>
+                                                <tr {% if date.endDate|date('Y-m-d') < "now"|date('Y-m-d') and not date.returned %}style="color:red"{% endif %}>
                                                     <td>{{ date.brand }} {{ date.model }}</td>
                                                     <td>{{ date.address }}</td>
                                                     <td>{{ date.city }}</td>
                                                     <td>{{ date.startDate | date('j/m/Y H:i') }}</td>
                                                     <td>{{ date.endDate | date('j/m/Y H:i') }}</td>
-                                                    <td>
-                                                        <a class="btn btn-success" href="{{ path('user_endLocation', {'locationId': date.id | urlencrypt}) }}">Vehicule rendu</a>
-                                                    </td>
+
+                                                    {% if date.returned %}
+                                                        <td style="color:green">
+                                                            <i class="fa fa-check-circle-o" aria-hidden="true"></i> Rendu
+                                                        </td>
+                                                    {% elseif date.endDate|date('Y-m-d') < "now"|date('Y-m-d') and not date.returned %}
+                                                        <td style="color:red">
+                                                            <button class="btn btn-danger leave-comment" type="button"
+                                                               data-toggle="modal" data-target="#leave-comment"
+                                                               id="comment" data-href="{{ path('user_endLocation', {'locationId': date.id | urlencrypt}) }}">
+                                                                Rendu en retard
+                                                            </button>
+                                                            <div id="modal-ajax"></div>
+                                                        </td>
+                                                    {% else %}
+                                                        <td>
+                                                            <button class="btn btn-success leave-comment" type="button"
+                                                               data-toggle="modal" data-target="#leave-comment"
+                                                               id="comment" data-href="{{ path('user_endLocation', {'locationId': date.id | urlencrypt}) }}">
+                                                                Rendu
+                                                            </button>
+                                                            <div id="modal-ajax"></div>
+                                                        </td>
+                                                    {% endif %}
                                                 </tr>
                                             {% endfor %}
                                             </tbody>

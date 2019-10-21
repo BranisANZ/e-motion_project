@@ -71,35 +71,35 @@ class AnnounceController extends AbstractController
             $hours      = $this->diffHours($date['stopDateTime'],$date['startDateTime']);
             $priceTotal = round(($announce->getPrice() /24) * $hours,2);
             $priceTotal = $this->eurToCents($priceTotal);
-            $em         = $this->getDoctrine()->getManager();
-            $location   = new Location();
-            $location->setUser($security->getUser())
-                     ->setAnnounce($announce)
-                     ->setStartDate($date['startDateTime'])
-                     ->setEndDate($date['stopDateTime']);
-
-            $em->persist($location);
-            $em->flush();
-
-            $stripe = new Stripe();
-            $stripe::setApiKey('sk_test_jWWKdFyljvdnfJbjevs74kQH000tfdnAdA');
-
-            $session = Session::create([
-                'payment_method_types' => ['card'],
-                'line_items' => [[
-                    'name'        => $announce->getVehicle()->getBrand() . " " . $announce->getVehicle()->getModel(),
-                    'description' => $announce->getDescription(),
-                    'amount'      => $priceTotal,
-                    'currency'    => 'eur',
-                    'quantity'    => 1,
-                ]],
-                'success_url' => 'http://127.0.0.1:8000'. $this->generateUrl('successPayment', [
-                    'locationId' => $this->encryptor->encrypt($location->getId())
-                ]),
-                'cancel_url' => 'https://example.com/cancel',
-            ]);
-
             if ($this->isGranted('ROLE_ADMIN')) {
+                $em         = $this->getDoctrine()->getManager();
+                $location   = new Location();
+                $location->setUser($security->getUser())
+                         ->setAnnounce($announce)
+                         ->setStartDate($date['startDateTime'])
+                         ->setEndDate($date['stopDateTime']);
+
+                $em->persist($location);
+                $em->flush();
+
+                $stripe = new Stripe();
+                $stripe::setApiKey('sk_test_jWWKdFyljvdnfJbjevs74kQH000tfdnAdA');
+
+                $session = Session::create([
+                    'payment_method_types' => ['card'],
+                    'line_items' => [[
+                        'name'        => $announce->getVehicle()->getBrand() . " " . $announce->getVehicle()->getModel(),
+                        'description' => $announce->getDescription(),
+                        'amount'      => $priceTotal,
+                        'currency'    => 'eur',
+                        'quantity'    => 1,
+                    ]],
+                    'success_url' => 'http://127.0.0.1:8000'. $this->generateUrl('successPayment', [
+                        'locationId' => $this->encryptor->encrypt($location->getId())
+                    ]),
+                    'cancel_url' => 'https://example.com/cancel',
+                ]);
+
                 return $this->render('payment/index.html.twig', [
                     'controller_name' => 'PaymentController',
                     'sessionId' => $session['id']
