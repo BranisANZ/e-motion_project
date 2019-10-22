@@ -95,12 +95,12 @@ class Announce
         return $this;
     }
 
-    public function getUser(): ?user
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(?user $user): self
+    public function setUser(?User $user): self
     {
         $this->user = $user;
 
@@ -163,23 +163,31 @@ class Announce
         return $this->comments;
     }
 
+    /**
+     * @param Comment $comment
+     * @return $this
+     */
     public function addComment(Comment $comment): self
     {
         if (!$this->comments->contains($comment)) {
             $this->comments[] = $comment;
-            $comment->setAnounce($this);
+            $comment->setAnnounce($this);
         }
 
         return $this;
     }
 
+    /**
+     * @param Comment $comment
+     * @return $this
+     */
     public function removeComment(Comment $comment): self
     {
         if ($this->comments->contains($comment)) {
             $this->comments->removeElement($comment);
             // set the owning side to null (unless already changed)
-            if ($comment->getAnounce() === $this) {
-                $comment->setAnounce(null);
+            if ($comment->getAnnounce() === $this) {
+                $comment->setAnnounce(null);
             }
         }
 
@@ -227,10 +235,13 @@ class Announce
 
     /**
      * @param mixed $zipcode
+     * @return Announce
      */
-    public function setZipcode($zipcode): void
+    public function setZipcode($zipcode): self
     {
         $this->zipcode = $zipcode;
+
+        return $this;
     }
 
     /**
@@ -243,13 +254,17 @@ class Announce
 
     /**
      * @param mixed $city
+     * @return Announce
      */
-    public function setCity($city): void
+    public function setCity($city): self
     {
         $this->city = $city;
+
+        return $this;
     }
 
-    public function __toString() {
+    public function __toString()
+    {
         return $this->id . " - ". $this->address . " " . $this->city;
     }
 }

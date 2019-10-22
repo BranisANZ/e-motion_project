@@ -2,29 +2,43 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Location;
 use App\Entity\User;
+use App\Form\CommentType;
 use App\Form\RegistrationFormType;
 use App\Form\UserType;
+use App\Repository\LocationRepository;
+use Nzo\UrlEncryptorBundle\Annotations\ParamDecryptor;
+use Nzo\UrlEncryptorBundle\UrlEncryptor\UrlEncryptor;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-
 
 /**
  * @Route("/user", name="user_")
  */
 class UserController extends AbstractController
 {
+    private $encryptor;
+
+    public function __construct(UrlEncryptor $encryptor)
+    {
+        $this->encryptor = $encryptor;
+    }
+
     /**
      * @Route("/register", name="register")
      * @param Request $request
      * @param UserPasswordEncoderInterface $passwordEncoder
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return RedirectResponse|Response
      */
-    public function register(Request $request,UserPasswordEncoderInterface $passwordEncoder)
+    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder)
     {
         $formRegister = $this->createForm(RegistrationFormType::class, $user = new User());
         $formRegister->handleRequest($request);
@@ -53,7 +67,7 @@ class UserController extends AbstractController
     /**
      * @Route("/login", name="login")
      * @param AuthenticationUtils $authenticationUtils
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function login(AuthenticationUtils $authenticationUtils)
     {
@@ -68,8 +82,7 @@ class UserController extends AbstractController
      */
     public function logout()
     {
-        // controller can be blank: it will never be executed!
-        throw new \Exception('Don\'t forget to activate logout in security.yaml');
+        return true;
     }
 
     /**
@@ -77,19 +90,23 @@ class UserController extends AbstractController
      */
     public function history()
     {
+        /** @var User $userConnected */
         $userConnected = $this->getUser();
-        if(!empty($userConnected)) {
-            $locationPast = $locationFutur = $locationDate = "";
+
+        if (!empty($userConnected)) {
+            $locationPast    = $locationFuture = $locationDate = "";
             $idUserConnected = $userConnected->getId();
-            $repository = $this->getDoctrine()->getRepository(Location::class);
-            $locationPast = $repository->getLocationPast($idUserConnected);
-            $locationFutur = $repository->getLocationFutur($idUserConnected);
-            $locationDate = $repository->getLocationDate($idUserConnected);
+            $em              = $this->getDoctrine()->getManager();
+            /** @var LocationRepository $repoLocation */
+            $repoLocation   = $em->getRepository(Location::class);
+            $locationPast   = $repoLocation->getLocationPast($idUserConnected);
+            $locationFuture = $repoLocation->getLocationFutur($idUserConnected);
+            $locationDate   = $repoLocation->getLocationDate($idUserConnected);
 
             return $this->render('user/history.html.twig', [
-                'locationPast' => $locationPast,
-                'locationFutur' => $locationFutur,
-                'locationDate' => $locationDate,
+                'locationPast'  => $locationPast,
+                'locationFutur' => $locationFuture,
+                'locationDate'  => $locationDate,
             ]);
         }
 
@@ -98,10 +115,14 @@ class UserController extends AbstractController
 
     /**
      * @Route("/account", name="account")
+     * @param Request $request
+     * @return RedirectResponse|Response
      */
-    public function account(Request $request){
+    public function account(Request $request)
+    {
         $userConnected = $this->getUser();
-        if(!empty($userConnected)){
+
+        if (!empty($userConnected)) {
             $idUser = $userConnected->getId();
             $repository = $this->getDoctrine()->getRepository(User::class);
             $infoUser = $repository->find($idUser);
@@ -109,7 +130,6 @@ class UserController extends AbstractController
             $formUser->handleRequest($request);
 
             if ($formUser->isSubmitted() && $formUser->isValid()) {
-
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->flush();
 
@@ -126,5 +146,55 @@ class UserController extends AbstractController
         }
 
         return $this->redirectToRoute('user_login');
+    }
+
+    /**
+     * @Route("/end/location/{locationId}", name="endLocation")
+     * @Template("modal/_modal_comment.html.twig")
+     * @ParamDecryptor(params={"locationId"})
+     * @param Request $request
+     * @param string $locationId
+     * @return array|RedirectResponse
+     * @throws \Exception
+     */
+    public function endLocation(Request $request, string $locationId)
+    {
+        $commentForm  = $this->createForm(CommentType::class, null, [
+            'action' => $this->generateUrl(
+                'user_endLocation',
+                [ 'locationId' => $this->encryptor->encrypt($locationId)]
+            ),
+            'method' => 'POST'
+        ])->handleRequest($request);
+
+        if ($commentForm->isSubmitted() && $commentForm->isValid()) {
+            $em           = $this->getDoctrine()->getManager();
+            $repoLocation = $em->getRepository(Location::class);
+
+            /** @var Location $location */
+            if ($location = $repoLocation->find($locationId)) {
+                if ($content = $commentForm->get('comment')->getData()) {
+                    /** @var User $user */
+                    $user    = $this->getUser();
+                    $comment = new Comment();
+                    $comment->setAnnounce($location->getAnnounce())
+                            ->setUser($user)
+                            ->setRate($request->request->get('rate'))
+                            ->setContent($content);
+                    $em->persist($comment);
+                }
+                $location->getAnnounce()->setEnable(true);
+                $location->setReturned(true)
+                         ->setReturnedAt(new \DateTime());
+                $em->persist($location);
+                $em->flush();
+            }
+
+            return $this->redirectToRoute('user_history');
+        }
+
+        $commentForm = $commentForm->createView();
+
+        return compact('commentForm');
     }
 }

@@ -1,3 +1,5 @@
+composer.lock
+symfony.lock
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
@@ -19,3 +21,8 @@
 ###> symfony/web-server-bundle ###
 /.web-server-pid
 ###< symfony/web-server-bundle ###
+
+###> squizlabs/php_codesniffer ###
+/.phpcs-cache
+/phpcs.xml
+###< squizlabs/php_codesniffer ###

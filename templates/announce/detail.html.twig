@@ -21,10 +21,10 @@
             <div class="row">
                 <aside class="col-sm-5 border-right">
                     <article class="gallery-wrap">
-                        <div class="img-big-wrap">
-                            <div> <a href="#"><img src="{{ annonce.vehicle.photo }}"></a></div>
-                        </div> <!-- slider-product.// -->
-                    </article> <!-- gallery-wrap .end// -->
+                        <div class="img-big-wrap" style="margin-right: -15px">
+                            <img src="{{ asset('uploads/' ~annonce.vehicle.photo) }}" alt="" style="width:100%;text-align: center">
+                        </div>
+                    </article>
                 </aside>
                 <aside class="col-sm-7">
                     <article class="card-body p-5">
@@ -54,21 +54,19 @@
 
                         <hr>
                         <div class="row">
-                            <div class="col-sm-5">
+                            <div class="col-sm-12 col-md-12 col-lg-12">
                                 <dl class="param param-inline">
-                                    <dt>Quantity: </dt>
+                                    <dt>Durée de location :</dt>
                                     {{ form_start(form) }}
                                         <div class="my-custom-class-for-errors">
                                             {{ form_errors(form) }}
                                         </div>
 
                                         <div class="row">
-                                            <div class="col">
+                                            <div class="col-lg-6 col-md-6 col-sm-6">
                                                 {{ form_row(form.startDateTime) }}
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col">
+                                            <div class="col-lg-6 col-md-6 col-sm-6">
                                                 {{ form_row(form.stopDateTime) }}
                                             </div>
                                         </div>

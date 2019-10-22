@@ -32,7 +32,7 @@ class Location
 
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="datetime")
      */
     private $startDate;
 
@@ -41,11 +41,16 @@ class Location
      */
     private $endDate;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $returned = false;
 
-    public function __construct()
-    {
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $returned_at;
 
-    }
 
     public function getId(): ?int
     {
@@ -88,19 +93,59 @@ class Location
         return $this;
     }
 
-    public function getAnnounce(): ?announce
+    public function getAnnounce(): ?Announce
     {
         return $this->announce;
     }
 
-    public function setAnnounce(?announce $announce): self
+    public function setAnnounce(?Announce $announce): self
     {
         $this->announce = $announce;
 
         return $this;
     }
 
-    public function __toString() {
+    /**
+     * @return mixed
+     */
+    public function getReturned()
+    {
+        return $this->returned;
+    }
+
+    /**
+     * @param mixed $returned
+     * @return Location
+     */
+    public function setReturned($returned): self
+    {
+        $this->returned = $returned;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getReturnedAt()
+    {
+        return $this->returned_at;
+    }
+
+    /**
+     * @param mixed $returned_at
+     * @return Location
+     */
+    public function setReturnedAt($returned_at): self
+    {
+        $this->returned_at = $returned_at;
+
+        return $this;
+    }
+
+
+    public function __toString()
+    {
         return $this->startDate->format("d/m/Y") ." - ". $this->endDate->format("d/m/Y");
     }
 }

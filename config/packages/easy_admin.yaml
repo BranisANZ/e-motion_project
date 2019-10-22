@@ -12,13 +12,38 @@ easy_admin:
         number: '%.2f'
     design:
         menu:
-            - label: 'Utilisateurs'
-              icon: 'users'
-              entity: 'User'
             - label: 'Annonces'
               icon: 'tag'
               entity: 'Announce'
+            - label: 'Utilisateurs'
+              icon: 'users'
+              entity: 'User'
+            - label: 'Vehicules'
+              icon: 'tag'
+              entity: 'Vehicle'
     entities:
+        Vehicle:
+            class: App\Entity\Vehicle
+            label: 'Vehicules'
+            form:
+                fields:
+                    - { property: 'brand', label: 'Marque' }
+                    - { property: 'model', label: 'Modèle' }
+                    - { property: 'matriculation', label: 'Matriculation' }
+                    - { property: 'km', label: 'Kilometrage' }
+                    - { property: 'autonomy', label: 'Autonomie' }
+                    - { property: 'user', label: 'Détenteur' }
+                    - { property: 'door', label: 'Nombre de portes' }
+                    - { property: 'place', label: 'Nombre de place' }
+            list:
+                fields:
+                    - { property: 'id', label: '#' }
+                    - { property: 'brand', label: 'Marque' }
+                    - { property: 'model', label: 'Modèle' }
+                    - { property: 'matriculation', label: 'Matriculation' }
+                    - { property: 'km', label: 'Kilometrage' }
+                    - { property: 'autonomy', label: 'Autonomie' }
+                    - { property: 'user', label: 'Auteur' }
         Announce:
             class: App\Entity\Announce
             label: 'Annonces'
@@ -42,6 +67,7 @@ easy_admin:
                     - { property: 'price', label: 'Prix' }
                     - { property: 'description', label: 'Description' }
                     - { property: 'user', label: 'Auteur' }
+                    - { property: 'vehicle', label: 'Vehicule' }
                     - { property: 'enable', label: 'Disponible' }
         User:
             class: App\Entity\User

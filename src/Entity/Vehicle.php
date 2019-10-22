@@ -220,10 +220,13 @@ class Vehicle
 
     /**
      * @param mixed $type
+     * @return Vehicle
      */
-    public function setType($type): void
+    public function setType($type): self
     {
         $this->type = $type;
+
+        return $this;
     }
 
     /**
@@ -244,7 +247,8 @@ class Vehicle
         return $this;
     }
 
-    public function __toString() {
+    public function __toString()
+    {
         return $this->matriculation . " - ". $this->brand . " " . $this->model;
     }
 }

@@ -4,6 +4,8 @@ namespace App\Form;
 
 use App\Entity\Announce;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -58,17 +60,22 @@ class AnnouncementType extends AbstractType
                 'attr' => [
                     'class' => 'form-control'
                 ],
-            ])
-        ;
+            ])->add('vehicle', CollectionType::class, [
+                'entry_type' => HiddenType::class,
+                'allow_add' => true,
+                'by_reference' => false,
+                'data' => $options['vehicle']
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Announce::class,
+            'data_class'      => null,
             'csrf_protection' => true,
             'csrf_field_name' => '_token',
             'csrf_token_id'   => 'announcement_item',
+            'vehicle'         => null
         ]);
     }
 }
