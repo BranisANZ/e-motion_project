@@ -42,6 +42,11 @@ class Location
     private $endDate;
 
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $pricePaid;
+
+    /**
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $returned = false;
@@ -139,6 +144,25 @@ class Location
     public function setReturnedAt($returned_at): self
     {
         $this->returned_at = $returned_at;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPricePaid()
+    {
+        return $this->pricePaid;
+    }
+
+    /**
+     * @param mixed $pricePaid
+     * @return Location
+     */
+    public function setPricePaid($pricePaid): self
+    {
+        $this->pricePaid = $pricePaid;
 
         return $this;
     }

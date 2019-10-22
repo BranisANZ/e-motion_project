@@ -26,7 +26,7 @@ App\Entity\User:
     photo: "image-not-found.png"
     email: "admin@admin.fr"
     phone: <phoneNumber()>
-    loyaltyPoints: <numberBetween(0, 700)>
+    loyaltyPoints: 0
     password: "<passwordGenerator(admin)>"
     roles: "[ROLE_ADMIN]"
 

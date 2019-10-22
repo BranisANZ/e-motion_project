@@ -47,7 +47,7 @@ class Announce
 
 
     /**
-     * @ORM\Column(type="integer", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $zipcode;
 

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Location;
+use App\Entity\User;
 use App\Repository\LocationRepository;
 use Nzo\UrlEncryptorBundle\Annotations\ParamDecryptor;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -71,6 +72,10 @@ class PaymentController extends AbstractController
 
             $mailer->send($message);
 
+            /** @var User $user */
+            $user      = $location->getUser();
+
+            $user->setLoyaltyPoints($this->getLoyaltyPoint($user, $location->getPricePaid()));
             $location->getAnnounce()->setEnable(false);
             $em->persist($location);
             $em->flush();
@@ -78,5 +83,18 @@ class PaymentController extends AbstractController
             return $this->redirectToRoute('home');
         }
         return $this->render('payment/index.html.twig');
+    }
+
+    /**
+     * @param User $user
+     * @param int $pricePaid
+     * @return int|mixed
+     */
+    public function getLoyaltyPoint(User $user, int $pricePaid)
+    {
+        $loyaltyPoints = $user->getLoyaltyPoints();
+        $loyaltyPoints += $pricePaid;
+
+        return $loyaltyPoints;
     }
 }
