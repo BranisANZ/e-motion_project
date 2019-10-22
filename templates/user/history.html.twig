@@ -12,7 +12,7 @@
                 <div class="col-sm-12 col-md-12 col-lg-12">
                     <div class="accordion" id="accordionExample">
                         <div class="card">
-                            <div class="card-header" id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            <div class="card-header" id="headingOne" style="cursor:pointer" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                 <h5 class="mb-0">
                                     Mes locations en cours
                                 </h5>
@@ -75,7 +75,7 @@
                             </div>
                         </div>
                         <div class="card">
-                            <div class="card-header" id="headingTwo" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            <div class="card-header" style="cursor:pointer" id="headingTwo" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                                 <h5 class="mb-0">
                                     Mes locations à venir
                                 </h5>
@@ -86,7 +86,7 @@
                                         <table class="table mt-3">
                                             <thead class="thead-dark">
                                             <tr>
-                                                <th>Marque</th>
+                                                <th>Voiture</th>
                                                 <th>Immatriculation</th>
                                                 <th>Adresse</th>
                                                 <th>Ville</th>
@@ -97,7 +97,7 @@
                                             <tbody>
                                             {% for futur in locationFutur %}
                                                 <tr>
-                                                    <td>{{ futur.brand }}</td>
+                                                    <td>{{ futur.brand }} {{ futur.model }}</td>
                                                     <td>{{ futur.matriculation }}</td>
                                                     <td>{{ futur.address }}</td>
                                                     <td>{{ futur.city }}</td>
@@ -114,7 +114,7 @@
                             </div>
                         </div>
                         <div class="card">
-                            <div class="card-header" id="headingThree" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            <div class="card-header" style="cursor:pointer" id="headingThree" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                                 <h5 class="mb-0">
                                     Mes locations passées
                                 </h5>
@@ -125,7 +125,7 @@
                                         <table class="table mt-3">
                                             <thead class="thead-dark">
                                             <tr>
-                                                <th>Marque</th>
+                                                <th>Voiture</th>
                                                 <th>Immatriculation</th>
                                                 <th>Adresse</th>
                                                 <th>Ville</th>
@@ -137,7 +137,7 @@
                                             <tbody>
                                             {% for past in locationPast %}
                                                 <tr {% if past.returned_at > past.endDate %}style="color:red"{% endif %}>
-                                                    <td>{{ past.brand }}</td>
+                                                    <td>{{ past.brand }} {{ past.model }}</td>
                                                     <td>{{ past.matriculation }}</td>
                                                     <td>{{ past.address }}</td>
                                                     <td>{{ past.city }}</td>

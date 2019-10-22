@@ -3,10 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Announce;
-use App\Entity\Location;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * @method Announce|null find($id, $lockMode = null, $lockVersion = null)
@@ -22,7 +20,8 @@ class AnnounceRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Announce[] Returns an array of Announce objects
+     * @param $value
+     * @return mixed
      */
     public function findForSearch($value)
     {
@@ -31,20 +30,21 @@ class AnnounceRepository extends ServiceEntityRepository
             ->orderBy('a.id', 'ASC')
         ;
 
-        if($value['type'] != null){
+        if ($value['type'] != null) {
             $search->innerJoin('a.vehicle', 'v')
-                ->andWhere('v.type = :type')
-                ->setParameter('type',$value['type'])
+                   ->andWhere('v.type = :type')
+                   ->setParameter('type', $value['type'])
             ;
         }
-        if($value['minPrice'] != null){
+
+        if ($value['minPrice'] != null) {
             $search->andWhere('a.price >= :priceMini')
-                ->setParameter('priceMini',$value['minPrice'])
+                   ->setParameter('priceMini', $value['minPrice'])
             ;
         }
-        if($value['maxPrice'] != null){
+        if ($value['maxPrice'] != null) {
             $search->andWhere('a.price <= :maxPrice')
-                ->setParameter('maxPrice',$value['maxPrice'])
+                   ->setParameter('maxPrice', $value['maxPrice'])
             ;
         }
 
@@ -52,28 +52,29 @@ class AnnounceRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Announce[] Returns an array of Announce objects
+     * @param $value
+     * @return mixed
      */
     public function findForSearchSwipe($value)
     {
-    $search = $this->createQueryBuilder('a')
-        ->orderBy('a.id', 'ASC')
+        $search = $this->createQueryBuilder('a')
+                       ->orderBy('a.id', 'ASC')
         ;
 
-        if($value['type'] != null){
+        if ($value['type'] != null) {
             $search->innerJoin('a.vehicle', 'v')
-                ->andWhere('v.type = :type')
-                ->setParameter('type',$value['type'])
+                   ->andWhere('v.type = :type')
+                   ->setParameter('type', $value['type'])
             ;
         }
-        if($value['minPrice'] != null){
+        if ($value['minPrice'] != null) {
             $search->andWhere('a.price >= :priceMini')
-                ->setParameter('priceMini',$value['minPrice'])
+                   ->setParameter('priceMini', $value['minPrice'])
             ;
         }
-        if($value['maxPrice'] != null){
+        if ($value['maxPrice'] != null) {
             $search->andWhere('a.price <= :maxPrice')
-                ->setParameter('maxPrice',$value['maxPrice'])
+                   ->setParameter('maxPrice', $value['maxPrice'])
             ;
         }
 
@@ -82,7 +83,7 @@ class AnnounceRepository extends ServiceEntityRepository
 
     /**
      * @param $type
-     * @return Announce[] Returns an array of Announce objects
+     * @return mixed
      */
     public function findByVehicleType($type)
     {

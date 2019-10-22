@@ -3,25 +3,32 @@
 namespace App\Controller;
 
 use App\Form\SearchAnnounceType;
+use App\Repository\AnnounceRepository;
+use App\Repository\VehicleRepository;
+use DoctrineMigrations\Version20190916130741;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\{
-    RedirectResponse, Request, Response
-};
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 
-use App\Entity\{
-    Announce, Vehicle, Location
-};
-use App\Form\{AnnouncementType, DateLocationType, RentalType};
+use App\Entity\Announce;
+use App\Entity\User;
+use App\Entity\Vehicle;
+use App\Entity\Location;
+use App\Form\AnnouncementType;
+use App\Form\DateLocationType;
+use App\Form\RentalType;
 use Nzo\UrlEncryptorBundle\UrlEncryptor\UrlEncryptor;
 
-
 /**
+ * Class AnnounceController
+ * @package App\Controller
  * @Route("/annonce")
  */
 class AnnounceController extends AbstractController
@@ -35,22 +42,26 @@ class AnnounceController extends AbstractController
 
     /**
      * @Route("/", name="index")
+     * @param Request $request
+     * @return Response
      */
     public function index(Request $request): Response
     {
-        $em = $this->getDoctrine();
+        $em           = $this->getDoctrine();
+        /** @var AnnounceRepository $repoAnnounce */
         $repoAnnounce = $em->getRepository(Announce::class);
-        $annonces = $repoAnnounce->findAll();
-        $searchForm = $this->createForm(SearchAnnounceType::class);
-        $searchForm->handleRequest($request);
-        if ($searchForm->isSubmitted() && $searchForm->isValid()){
-            $data = $searchForm->getData();
+        $searchForm   = $this->createForm(SearchAnnounceType::class)
+                             ->handleRequest($request);
+        $annonces     = $repoAnnounce->findAll();
+
+        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+            $data     = $searchForm->getData();
             $annonces = $repoAnnounce->findForSearch($data);
         }
+
         return $this->render('announce/index.html.twig', [
             "searchForm" => $searchForm->createView(),
-            "annonces" => $annonces,
-
+            "annonces"   => $annonces,
         ]);
     }
 
@@ -62,19 +73,21 @@ class AnnounceController extends AbstractController
      * @return Response
      * @throws \Stripe\Exception\ApiErrorException
      */
-    public function detailAction(Request $request, Security $security, Announce $announce){
-        $form = $this->createForm(DateLocationType::class);
-        $form->handleRequest($request);
+    public function detailAction(Request $request, Security $security, Announce $announce)
+    {
+        $form = $this->createForm(DateLocationType::class)->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $date       = $form->getData();
-            $hours      = $this->diffHours($date['stopDateTime'],$date['startDateTime']);
-            $priceTotal = round(($announce->getPrice() /24) * $hours,2);
+            $hours      = $this->diffHours($date['stopDateTime'], $date['startDateTime']);
+            $priceTotal = round(($announce->getPrice() /24) * $hours, 2);
             $priceTotal = $this->eurToCents($priceTotal);
-            if ($this->isGranted('ROLE_ADMIN')) {
+            if ($this->isGranted("ROLE_ADMIN")) {
                 $em         = $this->getDoctrine()->getManager();
+                /** @var User $user */
+                $user       = $security->getUser();
                 $location   = new Location();
-                $location->setUser($security->getUser())
+                $location->setUser($user)
                          ->setAnnounce($announce)
                          ->setStartDate($date['startDateTime'])
                          ->setEndDate($date['stopDateTime']);
@@ -88,7 +101,8 @@ class AnnounceController extends AbstractController
                 $session = Session::create([
                     'payment_method_types' => ['card'],
                     'line_items' => [[
-                        'name'        => $announce->getVehicle()->getBrand() . " " . $announce->getVehicle()->getModel(),
+                        'name'        => $announce->getVehicle()->getBrand()
+                                 . " " . $announce->getVehicle()->getModel(),
                         'description' => $announce->getDescription(),
                         'amount'      => $priceTotal,
                         'currency'    => 'eur',
@@ -122,7 +136,7 @@ class AnnounceController extends AbstractController
      * )
      * @Template("announce/rental.html.twig")
      * @param Request $request
-     * @return RedirectResponse|Response
+     * @return array
      */
     public function addVehicleAction(Request $request)
     {
@@ -143,55 +157,56 @@ class AnnounceController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @Route(
      *     "/add/announcement",
-     *     name="announcement")
+     *     name="announcement"
+     * )
      * @Template("announce/partials/_announcement.html.twig")
      * @param Request $request
      * @param Security $security
-     * @return RedirectResponse|Response
+     * @return array|RedirectResponse
      * @throws \Exception
      */
     public function addAnnouncementAction(Request $request, Security $security)
     {
         $form = $this->createForm(AnnouncementType::class, null, [
-            'action' => $this->generateUrl('announcement'),
-            'method' => 'POST',
+            'action'  => $this->generateUrl('announcement'),
+            'method'  => 'POST',
             'vehicle' => $request->request->get('rental') ? $request->request->get('rental') : null,
         ])->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
 
-            if ($this->isCsrfTokenValid(
-                    'announcement_item',
-                    $request->request->get('announcement')['_token']
-                ) && $this->isCsrfTokenValid(
-                    'rental_item',
-                    $data['vehicle']['_token']
-                )) {
-                $em       = $this->getDoctrine()->getManager();
-                $announce = new Announce();
+            if ($this->isCsrfTokenValid('announcement_item', $request->request->get('announcement')['_token'])
+                && $this->isCsrfTokenValid('rental_item', $data['vehicle']['_token'])) {
+                $em          = $this->getDoctrine()->getManager();
+                $announce    = new Announce();
+                /** @var VehicleRepository $repoVehicle */
+                $repoVehicle = $em->getRepository(Vehicle::class);
 
-                if (!$vehicle = $em->getRepository(Vehicle::class)->findOneBy([
+                /** @var Vehicle $vehicle */
+                if (!$vehicle = $repoVehicle->findOneBy([
                     'matriculation' => $data['vehicle']['matriculation'],
                     'user'          => $security->getUser(),
                     'type'          => $data['vehicle']['type'],
                 ])) {
+                    /** @var User $user */
+                    $user     = $security->getUser();
+                    $door     = array_key_exists('door', $data['vehicle']) ? $data['vehicle']['door'] : null;
+                    $place    = array_key_exists('place', $data['vehicle']) ? $data['vehicle']['door'] : null;
+                    $photo    = array_key_exists('photo', $data['vehicle']) ?
+                                $data['vehicle']['photo'] : $vehicle->getPhoto();
                     $vehicle  = new Vehicle();
                     $vehicle->setType($data['vehicle']['type'])
-                        ->setModel($data['vehicle']['model'])
-                        ->setBrand($data['vehicle']['brand'])
-                        ->setMatriculation($data['vehicle']['matriculation'])
-                        ->setKm($data['vehicle']['km'])
-                        ->setYear(new \DateTime($data['vehicle']['year']))
-                        ->setDoor(array_key_exists ('door', $data['vehicle']) ?
-                            $data['vehicle']['door'] : null
-                        )->setPlace(array_key_exists('place', $data['vehicle']) ?
-                            $data['vehicle']['door'] : null
-                        )->setAutonomy($data['vehicle']['autonomy'])
-                        ->setUser($security->getUser())
-                        ->setPhoto(array_key_exists('photo', $data['vehicle']) ?
-                            $data['vehicle']['photo'] : $vehicle->getPhoto()
-                        );
+                            ->setModel($data['vehicle']['model'])
+                            ->setBrand($data['vehicle']['brand'])
+                            ->setMatriculation($data['vehicle']['matriculation'])
+                            ->setKm($data['vehicle']['km'])
+                            ->setYear(new \DateTime($data['vehicle']['year']))
+                            ->setDoor($door)
+                            ->setPlace($place)
+                            ->setAutonomy($data['vehicle']['autonomy'])
+                            ->setUser($user)
+                            ->setPhoto($photo);
                     $em->persist($vehicle);
                 }
 
@@ -209,20 +224,23 @@ class AnnounceController extends AbstractController
                 return $this->redirectToRoute("home");
             }
         }
-       $form = $form->createView();
+
+        $form = $form->createView();
 
         return compact('form');
     }
 
 
-    private function diffHours(\DateTime $dt2, \DateTime $dt1){
-        $diff =  $dt2->diff($dt1);
+    private function diffHours(\DateTime $dt2, \DateTime $dt1)
+    {
+        $diff  = $dt2->diff($dt1);
         $hours = $diff->h;
         $hours = $hours + ($diff->days*24);
         return $hours;
     }
 
-    private function eurToCents($price){
+    private function eurToCents($price)
+    {
         return $price * 100;
     }
 }

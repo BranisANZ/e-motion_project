@@ -52,11 +52,6 @@ class Location
     private $returned_at;
 
 
-    public function __construct()
-    {
-
-    }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -98,12 +93,12 @@ class Location
         return $this;
     }
 
-    public function getAnnounce(): ?announce
+    public function getAnnounce(): ?Announce
     {
         return $this->announce;
     }
 
-    public function setAnnounce(?announce $announce): self
+    public function setAnnounce(?Announce $announce): self
     {
         $this->announce = $announce;
 
@@ -149,7 +144,8 @@ class Location
     }
 
 
-    public function __toString() {
+    public function __toString()
+    {
         return $this->startDate->format("d/m/Y") ." - ". $this->endDate->format("d/m/Y");
     }
 }
