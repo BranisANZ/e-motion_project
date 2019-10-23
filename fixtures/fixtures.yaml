@@ -50,7 +50,7 @@ App\Entity\Announce:
     user: "@user<numberBetween(1,20)>"
     address: <streetAddress()>
     price: <numberBetween( 0, 80)>
-    zipcode: <postcode()>
+    zipcode: <numberBetween(10000, 90000)>
     city: <city()>
     description: <paragraph( 3, true)>
     enable: boolean(80)
