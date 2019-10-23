@@ -118,8 +118,11 @@ class HomeController extends AbstractController
             $announceArray['address'] = str_replace("'"," ",$announceArray['address']);
 
             $address = $announceArray['address']." ".$announceArray['zipCode'];
+
             $url     = "https://maps.google.com/maps/api/geocode/json?address=".urlencode($address)."&key=AIzaSyATr6fvRb-z29lA4z_iVXLcXrfOXh86MRs";
             $ch      = curl_init();
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             $responseJson = curl_exec($ch);
