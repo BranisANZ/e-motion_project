@@ -47,7 +47,7 @@ class Announce
 
 
     /**
-     * @ORM\Column(type="integer", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $zipcode;
 
@@ -263,6 +263,10 @@ class Announce
         return $this;
     }
 
+    public function getFullAddress() {
+        return $this->address . ", ". $this->zipcode . " " . $this->city;
+    }
+
     public function objectToJSON(){
         $announce = [];
         $announce['id'] = $this->getId();
@@ -276,6 +280,7 @@ class Announce
         $vehicule['year'] = $vehiculeObje->getYear();
         $vehicule['autonomy'] = $vehiculeObje->getAutonomy();
         $announce['vehicule'] = $vehicule;
+
         return $announce;
     }
 

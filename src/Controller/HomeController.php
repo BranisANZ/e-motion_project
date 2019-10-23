@@ -112,13 +112,15 @@ class HomeController extends AbstractController
         $announces = $repoAnnounce->findAll();
 
         $announcesArray = [];
+        /** @var Announce $announce */
         foreach ($announces as $announce){
             $announceArray = ($announce->objectToJSON());
             $announceArray['address'] = str_replace("'"," ",$announceArray['address']);
 
             $address = $announceArray['address']." ".$announceArray['zipCode'];
-            $url = "https://maps.google.com/maps/api/geocode/json?address=".urlencode($address)."&key=AIzaSyATr6fvRb-z29lA4z_iVXLcXrfOXh86MRs";
-            $ch = curl_init();
+
+            $url     = "https://maps.google.com/maps/api/geocode/json?address=".urlencode($address)."&key=AIzaSyATr6fvRb-z29lA4z_iVXLcXrfOXh86MRs";
+            $ch      = curl_init();
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
             curl_setopt($ch, CURLOPT_URL, $url);
@@ -132,16 +134,14 @@ class HomeController extends AbstractController
                 $longitude = $response->results[0]->geometry->location->lng;
                 $announceArray['lat'] = $latitude;
                 $announceArray['long'] = $longitude;
-            } else {
-                //dump($response);
             }
 
             $body = $this->renderView('/home/bodyMarkerMap.html.twig',[
                 'announce' => $announce,
             ]);
+
             $body = str_replace('"',"'", $body);
             $body = str_replace("\n","", $body);
-
 
             $announceArray['body'] = $body;
 
