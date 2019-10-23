@@ -5,17 +5,27 @@ namespace App\Controller;
 use App\Entity\Location;
 use App\Entity\User;
 use App\Repository\LocationRepository;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Nzo\UrlEncryptorBundle\Annotations\ParamDecryptor;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
+use Swift_Attachment;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class PaymentController extends AbstractController
 {
+    private $kernel;
+
+    public function __construct(KernelInterface $appKernel) {
+        $this->kernel = $appKernel;
+    }
+
     /**
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @Route("/payment", name="payment")
@@ -70,6 +80,18 @@ class PaymentController extends AbstractController
                 )
             ;
 
+            $this->generatePDF($location, 'facture');
+            $this->generatePDF($location, 'contrat');
+
+            $message->attach(Swift_Attachment::fromPath(
+                $this->kernel->getProjectDir() . '/public/images/pdf/factures/facture_'. $location->getId() .'.pdf',
+                'application/pdf'
+            ));
+            $message->attach(Swift_Attachment::fromPath(
+                $this->kernel->getProjectDir() . '/public/images/pdf/contrats/contrat_'. $location->getId() .'.pdf',
+                'application/pdf'
+            ));
+
             $mailer->send($message);
 
             /** @var User $user */
@@ -96,5 +118,46 @@ class PaymentController extends AbstractController
         $loyaltyPoints += $pricePaid;
 
         return $loyaltyPoints;
+    }
+
+    /**
+     * @param Location $location
+     * @param string $type
+     */
+    public function generatePDF(Location $location, string $type)
+    {
+        $html       = $pdfFilepath = "";
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
+
+        $pdf = new Dompdf($pdfOptions);
+
+        if ($type == "facture") {
+            $html = $this->renderView(
+                'payment/partials/_facture.html.twig', [
+                'location' => $location
+            ]);
+        } else if ($type == "contrat") {
+            $html = $this->renderView(
+                'payment/partials/_contrat.html.twig', [
+                'location' => $location
+            ]);
+        }
+
+        $pdf->loadHtml($html);
+        $pdf->setPaper('A4', 'portrait');
+        $pdf->render();
+
+        $output = $pdf->output();
+
+        if ($type == "facture") {
+            $publicDirectory = $this->kernel->getProjectDir() . '/public/images/pdf/factures';
+            $pdfFilepath =  $publicDirectory . '/facture_'.$location->getId().'.pdf';
+        } else if ($type == "contrat") {
+            $publicDirectory = $this->kernel->getProjectDir() . '/public/images/pdf/contrats';
+            $pdfFilepath =  $publicDirectory . '/contrat_'.$location->getId().'.pdf';
+        }
+
+        file_put_contents($pdfFilepath, $output);
     }
 }
