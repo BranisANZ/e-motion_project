@@ -120,6 +120,7 @@ class UserController extends AbstractController
      */
     public function account(Request $request)
     {
+        /** @var User $userConnected */
         $userConnected = $this->getUser();
 
         if (!empty($userConnected)) {
@@ -170,6 +171,7 @@ class UserController extends AbstractController
 
         if ($commentForm->isSubmitted() && $commentForm->isValid()) {
             $em           = $this->getDoctrine()->getManager();
+            /** @var LocationRepository $repoLocation */
             $repoLocation = $em->getRepository(Location::class);
 
             /** @var Location $location */
@@ -184,6 +186,7 @@ class UserController extends AbstractController
                             ->setContent($content);
                     $em->persist($comment);
                 }
+
                 $location->getAnnounce()->setEnable(true);
                 $location->setReturned(true)
                          ->setReturnedAt(new \DateTime());

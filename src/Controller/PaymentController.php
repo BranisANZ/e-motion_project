@@ -22,7 +22,8 @@ class PaymentController extends AbstractController
 {
     private $kernel;
 
-    public function __construct(KernelInterface $appKernel) {
+    public function __construct(KernelInterface $appKernel)
+    {
         $this->kernel = $appKernel;
     }
 
@@ -84,11 +85,11 @@ class PaymentController extends AbstractController
             $this->generatePDF($location, 'contrat');
 
             $message->attach(Swift_Attachment::fromPath(
-                $this->kernel->getProjectDir() . '/public/images/pdf/factures/facture_'. $location->getId() .'.pdf',
+                $this->kernel->getProjectDir() . '/public/uploads/pdf/factures/facture_'. $location->getId() .'.pdf',
                 'application/pdf'
             ));
             $message->attach(Swift_Attachment::fromPath(
-                $this->kernel->getProjectDir() . '/public/images/pdf/contrats/contrat_'. $location->getId() .'.pdf',
+                $this->kernel->getProjectDir() . '/public/uploads/pdf/contrats/contrat_'. $location->getId() .'.pdf',
                 'application/pdf'
             ));
 
@@ -133,15 +134,9 @@ class PaymentController extends AbstractController
         $pdf = new Dompdf($pdfOptions);
 
         if ($type == "facture") {
-            $html = $this->renderView(
-                'payment/partials/_facture.html.twig', [
-                'location' => $location
-            ]);
-        } else if ($type == "contrat") {
-            $html = $this->renderView(
-                'payment/partials/_contrat.html.twig', [
-                'location' => $location
-            ]);
+            $html = $this->renderView('payment/partials/_facture.html.twig', ['location' => $location]);
+        } elseif ($type == "contrat") {
+            $html = $this->renderView('payment/partials/_contrat.html.twig', ['location' => $location]);
         }
 
         $pdf->loadHtml($html);
@@ -151,10 +146,10 @@ class PaymentController extends AbstractController
         $output = $pdf->output();
 
         if ($type == "facture") {
-            $publicDirectory = $this->kernel->getProjectDir() . '/public/images/pdf/factures';
+            $publicDirectory = $this->kernel->getProjectDir() . '/public/uploads/pdf/factures';
             $pdfFilepath =  $publicDirectory . '/facture_'.$location->getId().'.pdf';
-        } else if ($type == "contrat") {
-            $publicDirectory = $this->kernel->getProjectDir() . '/public/images/pdf/contrats';
+        } elseif ($type == "contrat") {
+            $publicDirectory = $this->kernel->getProjectDir() . '/public/uploads/pdf/contrats';
             $pdfFilepath =  $publicDirectory . '/contrat_'.$location->getId().'.pdf';
         }
 
