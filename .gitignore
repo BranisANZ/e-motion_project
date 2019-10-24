@@ -1,8 +1,8 @@
 composer.lock
 symfony.lock
 
-/public/images/pdf/contrats/*
-/public/images/pdf/factures/*
+/public/uploads/pdf/contrats/*
+/public/uploads/pdf/factures/*
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php

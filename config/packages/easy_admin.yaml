@@ -12,7 +12,7 @@ easy_admin:
         number: '%.2f'
     design:
         menu:
-            - label: 'Location en cours'
+            - label: 'Locations'
               icon: 'cart-arrow-down'
               entity: 'Location'
             - label: 'Annnonces'
@@ -116,4 +116,4 @@ easy_admin:
                     - { property: 'vehicle', label: 'Vehicule'}
                     - { property: 'user', label: 'Utilisateur' }
                     - { property: 'announce', label: 'Annonce' }
-                dql_filter: 'entity.returned = false'
+                    - { property: 'returned', label: 'Fini' }
