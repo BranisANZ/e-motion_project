@@ -84,11 +84,11 @@ class PaymentController extends AbstractController
             $this->generatePDF($location, 'contrat');
 
             $message->attach(Swift_Attachment::fromPath(
-                $this->kernel->getProjectDir() . '/public/images/pdf/factures/facture_'. $location->getId() .'.pdf',
+                $this->kernel->getProjectDir() . '/public/uploads/pdf/factures/facture_'. $location->getId() .'.pdf',
                 'application/pdf'
             ));
             $message->attach(Swift_Attachment::fromPath(
-                $this->kernel->getProjectDir() . '/public/images/pdf/contrats/contrat_'. $location->getId() .'.pdf',
+                $this->kernel->getProjectDir() . '/public/uploads/pdf/contrats/contrat_'. $location->getId() .'.pdf',
                 'application/pdf'
             ));
 
@@ -151,10 +151,10 @@ class PaymentController extends AbstractController
         $output = $pdf->output();
 
         if ($type == "facture") {
-            $publicDirectory = $this->kernel->getProjectDir() . '/public/images/pdf/factures';
+            $publicDirectory = $this->kernel->getProjectDir() . '/public/uploads/pdf/factures';
             $pdfFilepath =  $publicDirectory . '/facture_'.$location->getId().'.pdf';
         } else if ($type == "contrat") {
-            $publicDirectory = $this->kernel->getProjectDir() . '/public/images/pdf/contrats';
+            $publicDirectory = $this->kernel->getProjectDir() . '/public/uploads/pdf/contrats';
             $pdfFilepath =  $publicDirectory . '/contrat_'.$location->getId().'.pdf';
         }
 

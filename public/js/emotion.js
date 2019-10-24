@@ -1,3 +1,37 @@
+var App = (function(){
+    "use strict";
+    var _this = null;
+
+    return{
+        init : function(){
+            _this = this;
+
+            /* ACTIVATE COUNTER  */
+            this.StartCounter();
+        },
+
+        StartCounter: function(){
+            if($('.r-counter-section').length > 0){
+                $('.r-counter-section').appear(function(){
+                    var counterUp =
+                        $('.r-counter-section .r-counts').each(function(){
+                            var countNum = $(this).attr('data-count');
+                            var view = $(this).find('.r-count');
+                            $(view).counter({
+                                autoStart: true,
+                                duration: 2000,
+                                countTo: countNum,
+                                placeholder: 0,
+                                easing: "easeOutCubic"
+                            });
+                        });
+                });
+            }
+        }
+
+    }
+})(window);
+
 function formDataChange(btnModifier) {
     var _form = btnModifier.closest('form');
     var _data = {};
@@ -16,6 +50,7 @@ function formDataChange(btnModifier) {
 }
 
 $(function() {
+    App.init();
     $('body').on("click", "#searchAnnouncement",  function() {
         var _form = $(this).closest('form');
         if(_form.valid()){
